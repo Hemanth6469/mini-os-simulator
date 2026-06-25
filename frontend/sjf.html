@@ -3,52 +3,91 @@
 
 <head>
 
-    <title>SJF Scheduling</title>
+<title>SJF Scheduling</title>
 
-    <link rel="stylesheet" href="css/style.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+
+body{
+    background:#0f0f0f;
+    color:white;
+    font-family:Arial;
+    text-align:center;
+    padding:20px;
+}
+
+.card{
+    background:#1c1c1c;
+    width:95%;
+    max-width:900px;
+    margin:auto;
+    padding:30px;
+    border-radius:20px;
+}
+
+input{
+    padding:12px;
+    margin:10px;
+    width:90%;
+    border:none;
+    border-radius:10px;
+}
+
+button{
+    padding:15px 25px;
+    margin-top:20px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+table{
+    width:100%;
+    margin-top:30px;
+    border-collapse:collapse;
+}
+
+th,td{
+    border:1px solid #444;
+    padding:15px;
+}
+
+</style>
 
 </head>
 
 <body>
 
-<div class="container">
+<h1>SJF Scheduling</h1>
 
-    <h1>SJF Scheduling</h1>
+<div class="card">
 
-    <div class="card">
+<input
+type="number"
+id="num"
+placeholder="Enter Number of Processes">
 
-        <h2>Enter Number of Processes</h2>
+<button onclick="generateInputs()">
 
-        <input
-        type="number"
-        id="numProcesses"
-        placeholder="Number of Processes">
+Generate Inputs
 
-        <br><br>
+</button>
 
-        <button onclick="generateInputs()">
-            Generate Inputs
-        </button>
+<form
+action="/run_sjf"
+method="POST"
+id="sjfForm">
 
-    </div>
+<div id="inputs"></div>
 
-    <br>
+</form>
 
-    <form action="/run_sjf" method="POST">
+<button onclick="history.back()">
 
-        <div id="processInputs"></div>
+Back
 
-    </form>
-
-    <br>
-
-    <button
-    type="button"
-    onclick="window.location.href='cpu.html'">
-
-        Back
-
-    </button>
+</button>
 
 </div>
 
@@ -56,78 +95,49 @@
 
 function generateInputs(){
 
-    let n = document.getElementById(
-        "numProcesses"
-    ).value;
+    let n = document.getElementById("num").value;
 
-    let container = document.getElementById(
-        "processInputs"
-    );
-
-    container.innerHTML = "";
-
-    let table = `
-
+    let html = `
+    <input type="hidden" name="n" value="${n}">
     <table>
 
-        <tr>
-
-            <th>Process</th>
-            <th>Arrival Time</th>
-            <th>Burst Time</th>
-
-        </tr>
+    <tr>
+        <th>Process</th>
+        <th>Arrival Time</th>
+        <th>Burst Time</th>
+    </tr>
     `;
 
-    for(let i=1;i<=n;i++){
+    for(let i=0;i<n;i++){
 
-        table += `
-
+        html += `
         <tr>
 
-            <td>P${i}</td>
+            <td>P${i+1}</td>
 
             <td>
-
-                <input
-                type="number"
-                name="arrival${i}"
-                required>
-
+                <input type="number" name="at${i}" required>
             </td>
 
             <td>
-
-                <input
-                type="number"
-                name="burst${i}"
-                required>
-
+                <input type="number" name="bt${i}" required>
             </td>
 
         </tr>
         `;
     }
 
-    table += `
-
+    html += `
     </table>
-
-    <br>
-
-    <input
-    type="hidden"
-    name="n"
-    value="${n}">
 
     <button type="submit">
 
-        Run SJF
+    Run SJF
 
     </button>
     `;
 
-    container.innerHTML = table;
+    document.getElementById("inputs").innerHTML = html;
 }
 
 </script>
