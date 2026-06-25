@@ -20,32 +20,17 @@ def static_files(path):
 
 
 # =====================================================
-# FCFS CPU SCHEDULING
+# COMMON RESULT PAGE
 # =====================================================
 
-@app.route('/run_fcfs', methods=['POST'])
-def run_fcfs():
+def generate_cpu_page(title, at, bt, wt, tat):
 
-    n = int(request.form['n'])
-
-    at = []
-    bt = []
-
-    for i in range(n):
-        at.append(int(request.form[f'at{i}']))
-        bt.append(int(request.form[f'bt{i}']))
-
-    wt = [0] * n
-    tat = [0] * n
-
-    for i in range(1, n):
-        wt[i] = wt[i-1] + bt[i-1]
-
-    for i in range(n):
-        tat[i] = wt[i] + bt[i]
+    n = len(bt)
 
     avg_wt = sum(wt) / n
     avg_tat = sum(tat) / n
+
+    table = ""
 
     gantt = ""
 
@@ -64,10 +49,6 @@ def run_fcfs():
 
         current = end
 
-    table = ""
-
-    for i in range(n):
-
         table += f"""
         <tr>
             <td>P{i+1}</td>
@@ -84,7 +65,9 @@ def run_fcfs():
 
     <head>
 
-    <title>FCFS Result</title>
+    <title>{title}</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <style>
 
@@ -93,11 +76,15 @@ def run_fcfs():
         color:white;
         font-family:Arial;
         text-align:center;
+        padding:20px;
+    }}
+
+    h1{{
+        margin-top:20px;
     }}
 
     table{{
-        width:90%;
-        margin:auto;
+        width:100%;
         margin-top:40px;
         border-collapse:collapse;
     }}
@@ -105,7 +92,6 @@ def run_fcfs():
     th,td{{
         border:1px solid #444;
         padding:15px;
-        font-size:22px;
     }}
 
     th{{
@@ -115,9 +101,9 @@ def run_fcfs():
     .cards{{
         display:flex;
         justify-content:center;
-        gap:30px;
-        margin-top:40px;
+        gap:25px;
         flex-wrap:wrap;
+        margin-top:40px;
     }}
 
     .card{{
@@ -131,8 +117,8 @@ def run_fcfs():
         display:flex;
         justify-content:center;
         gap:20px;
-        margin-top:50px;
         flex-wrap:wrap;
+        margin-top:50px;
     }}
 
     .gantt-block{{
@@ -157,7 +143,7 @@ def run_fcfs():
 
     <body>
 
-    <h1>FCFS Scheduling Result</h1>
+    <h1>{title}</h1>
 
     <div class="cards">
 
@@ -206,112 +192,191 @@ def run_fcfs():
 
 
 # =====================================================
-# DISK FCFS
+# FCFS
 # =====================================================
 
-@app.route('/run_disk_fcfs', methods=['POST'])
-def run_disk_fcfs():
+@app.route('/run_fcfs', methods=['POST'])
+def run_fcfs():
 
-    requests = list(map(
-        int,
-        request.form['requests'].split()
-    ))
+    n = int(request.form['n'])
 
-    head = int(request.form['head'])
+    at = []
+    bt = []
 
-    sequence = [head] + requests
+    for i in range(n):
+        at.append(int(request.form[f'at{i}']))
+        bt.append(int(request.form[f'bt{i}']))
 
-    total_seek = 0
+    wt = [0] * n
+    tat = [0] * n
 
-    for i in range(len(sequence)-1):
-        total_seek += abs(sequence[i+1] - sequence[i])
+    for i in range(1, n):
+        wt[i] = wt[i-1] + bt[i-1]
 
-    blocks = ""
+    for i in range(n):
+        tat[i] = wt[i] + bt[i]
 
-    for value in sequence:
+    return generate_cpu_page(
+        "FCFS Scheduling Result",
+        at,
+        bt,
+        wt,
+        tat
+    )
 
-        blocks += f"""
-        <div class="block">
-            {value}
-        </div>
-        """
 
-    return f"""
+# =====================================================
+# SJF
+# =====================================================
 
-    <html>
+@app.route('/run_sjf', methods=['POST'])
+def run_sjf():
 
-    <head>
+    n = int(request.form['n'])
 
-    <title>Disk FCFS Result</title>
+    at = []
+    bt = []
 
-    <style>
+    for i in range(n):
+        at.append(int(request.form[f'at{i}']))
+        bt.append(int(request.form[f'bt{i}']))
 
-    body{{
-        background:#0f0f0f;
-        color:white;
-        font-family:Arial;
-        text-align:center;
-    }}
+    processes = []
 
-    .seek{{
-        margin-top:40px;
-        font-size:40px;
-        color:#00ff99;
-    }}
+    for i in range(n):
+        processes.append((bt[i], at[i], i))
 
-    .sequence{{
-        display:flex;
-        justify-content:center;
-        gap:20px;
-        flex-wrap:wrap;
-        margin-top:60px;
-    }}
+    processes.sort()
 
-    .block{{
-        background:#1f1f1f;
-        padding:30px;
-        border-radius:15px;
-        min-width:100px;
-        font-size:28px;
-    }}
+    wt = [0] * n
+    tat = [0] * n
 
-    button{{
-        margin-top:60px;
-        padding:15px 30px;
-        font-size:20px;
-        border:none;
-        border-radius:10px;
-        cursor:pointer;
-    }}
+    current = 0
 
-    </style>
+    for bt_val, at_val, idx in processes:
 
-    </head>
+        wt[idx] = current
+        tat[idx] = wt[idx] + bt_val
 
-    <body>
+        current += bt_val
 
-    <h1>FCFS Disk Scheduling Result</h1>
+    return generate_cpu_page(
+        "SJF Scheduling Result",
+        at,
+        bt,
+        wt,
+        tat
+    )
 
-    <div class="seek">
 
-        Total Seek Time = {total_seek}
+# =====================================================
+# ROUND ROBIN
+# =====================================================
 
-    </div>
+@app.route('/run_rr', methods=['POST'])
+def run_rr():
 
-    <div class="sequence">
+    n = int(request.form['n'])
 
-        {blocks}
+    tq = int(request.form['tq'])
 
-    </div>
+    at = []
+    bt = []
 
-    <button onclick="history.back()">
-        Back
-    </button>
+    for i in range(n):
+        at.append(int(request.form[f'at{i}']))
+        bt.append(int(request.form[f'bt{i}']))
 
-    </body>
+    rem = bt.copy()
 
-    </html>
-    """
+    wt = [0] * n
+    tat = [0] * n
+
+    time = 0
+
+    while True:
+
+        done = True
+
+        for i in range(n):
+
+            if rem[i] > 0:
+
+                done = False
+
+                if rem[i] > tq:
+
+                    time += tq
+                    rem[i] -= tq
+
+                else:
+
+                    time += rem[i]
+
+                    wt[i] = time - bt[i]
+
+                    rem[i] = 0
+
+        if done:
+            break
+
+    for i in range(n):
+        tat[i] = wt[i] + bt[i]
+
+    return generate_cpu_page(
+        "Round Robin Result",
+        at,
+        bt,
+        wt,
+        tat
+    )
+
+
+# =====================================================
+# PRIORITY
+# =====================================================
+
+@app.route('/run_priority', methods=['POST'])
+def run_priority():
+
+    n = int(request.form['n'])
+
+    at = []
+    bt = []
+    pr = []
+
+    for i in range(n):
+
+        at.append(int(request.form[f'at{i}']))
+        bt.append(int(request.form[f'bt{i}']))
+        pr.append(int(request.form[f'pr{i}']))
+
+    processes = []
+
+    for i in range(n):
+        processes.append((pr[i], at[i], bt[i], i))
+
+    processes.sort()
+
+    wt = [0] * n
+    tat = [0] * n
+
+    current = 0
+
+    for priority, at_val, bt_val, idx in processes:
+
+        wt[idx] = current
+        tat[idx] = wt[idx] + bt_val
+
+        current += bt_val
+
+    return generate_cpu_page(
+        "Priority Scheduling Result",
+        at,
+        bt,
+        wt,
+        tat
+    )
 
 
 # =====================================================
