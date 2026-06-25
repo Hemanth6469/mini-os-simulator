@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Deadlock Detection</title>
+
+    <style>
+
+    body{
+        background:#0f0f0f;
+        color:white;
+        font-family:Arial;
+        text-align:center;
+    }
+
+    h1{
+        margin-top:30px;
+        font-size:55px;
+    }
+
+    .card{
+
+        background:#1c1c1c;
+
+        width:700px;
+
+        margin:auto;
+
+        margin-top:40px;
+
+        padding:40px;
+
+        border-radius:20px;
+
+        box-shadow:0px 0px 20px rgba(255,255,255,0.08);
+    }
+
+    input{
+
+        width:90%;
+
+        padding:15px;
+
+        margin-top:20px;
+
+        font-size:18px;
+
+        border:none;
+
+        border-radius:10px;
+    }
+
+    textarea{
+
+        width:90%;
+
+        height:120px;
+
+        padding:15px;
+
+        margin-top:20px;
+
+        font-size:18px;
+
+        border:none;
+
+        border-radius:10px;
+    }
+
+    button{
+
+        margin-top:30px;
+
+        padding:15px 30px;
+
+        font-size:20px;
+
+        border:none;
+
+        border-radius:10px;
+
+        cursor:pointer;
+    }
+
+    </style>
+
+</head>
+
+<body>
+
+<h1>Deadlock Detection</h1>
+
+<div class="card">
+
+<form
+action="http://127.0.0.1:5000/run_deadlock"
+method="POST">
+
+    <h2>Allocation Matrix</h2>
+
+    <textarea
+    name="allocation"
+    placeholder="0 1 0
+2 0 0
+3 0 2"></textarea>
+
+    <h2>Maximum Matrix</h2>
+
+    <textarea
+    name="maximum"
+    placeholder="7 5 3
+3 2 2
+9 0 2"></textarea>
+
+    <h2>Available Resources</h2>
+
+    <input
+    type="text"
+    name="available"
+    placeholder="3 3 2">
+
+    <br>
+
+    <button type="submit">
+
+        Run Banker's Algorithm
+
+    </button>
+
+</form>
+
+<br>
+
+<button onclick="window.location.href='index.html'">
+
+    Back
+
+</button>
+
+</div>
+
+</body>
+</html>

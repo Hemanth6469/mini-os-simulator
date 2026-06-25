@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Disk Scheduling</title>
+
+<style>
+
+body{
+    background:#0f0f0f;
+    color:white;
+    font-family:Arial;
+    text-align:center;
+}
+
+h1{
+    margin-top:30px;
+    font-size:55px;
+}
+
+.container{
+
+    margin-top:50px;
+
+    display:grid;
+
+    grid-template-columns:repeat(3,1fr);
+
+    gap:40px;
+
+    width:90%;
+
+    margin-left:auto;
+
+    margin-right:auto;
+}
+
+.card{
+
+    background:#1c1c1c;
+
+    padding:40px;
+
+    border-radius:20px;
+
+    transition:0.4s;
+
+    box-shadow:0px 0px 20px rgba(255,255,255,0.08);
+}
+
+.card:hover{
+
+    transform:translateY(-10px) scale(1.05);
+
+    box-shadow:0px 0px 30px rgba(255,255,255,0.2);
+}
+
+a{
+
+    color:white;
+
+    text-decoration:none;
+
+    font-size:28px;
+
+    font-weight:bold;
+}
+
+button{
+
+    margin-top:60px;
+
+    padding:18px 35px;
+
+    font-size:22px;
+
+    border:none;
+
+    border-radius:12px;
+
+    cursor:pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>Disk Scheduling</h1>
+
+<div class="container">
+
+    <div class="card">
+
+        <a href="disk_fcfs.html">
+
+            FCFS
+
+        </a>
+
+    </div>
+
+    <div class="card">
+
+        <a href="disk_sstf.html">
+
+            SSTF
+
+        </a>
+
+    </div>
+
+    <div class="card">
+
+        <a href="disk_scan.html">
+
+            SCAN
+
+        </a>
+
+    </div>
+
+    <div class="card">
+
+        <a href="disk_cscan.html">
+
+            C-SCAN
+
+        </a>
+
+    </div>
+
+    <div class="card">
+
+        <a href="disk_look.html">
+
+            LOOK
+
+        </a>
+
+    </div>
+
+    <div class="card">
+
+        <a href="disk_clook.html">
+
+            C-LOOK
+
+        </a>
+
+    </div>
+
+</div>
+
+<button onclick="window.location.href='index.html'">
+
+    Back
+
+</button>
+
+</body>
+</html>

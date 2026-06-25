@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>FCFS Scheduling</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>FCFS Scheduling</h1>
+
+    <div class="card">
+
+        <h2>Enter Number of Processes</h2>
+
+        <input
+        type="number"
+        id="numProcesses"
+        placeholder="Number of Processes">
+
+        <br><br>
+
+        <button onclick="generateInputs()">
+            Generate Inputs
+        </button>
+
+    </div>
+
+    <br>
+
+    <form
+    id="fcfsForm"
+    action="http://127.0.0.1:5000/run_fcfs"
+    method="POST">
+
+        <div id="processInputs"></div>
+
+    </form>
+
+    <br>
+
+    <button
+    type="button"
+    onclick="window.location.href='cpu.html'">
+
+        Back
+
+    </button>
+
+</div>
+
+<script>
+
+function generateInputs(){
+
+    let n = document.getElementById(
+        "numProcesses"
+    ).value;
+
+    let container = document.getElementById(
+        "processInputs"
+    );
+
+    container.innerHTML = "";
+
+    let table = `
+    <table>
+
+        <tr>
+            <th>Process</th>
+            <th>Arrival Time</th>
+            <th>Burst Time</th>
+        </tr>
+    `;
+
+    for(let i=1;i<=n;i++){
+
+        table += `
+
+        <tr>
+
+            <td>P${i}</td>
+
+            <td>
+                <input
+                type="number"
+                name="arrival${i}"
+                required>
+            </td>
+
+            <td>
+                <input
+                type="number"
+                name="burst${i}"
+                required>
+            </td>
+
+        </tr>
+        `;
+    }
+
+    table += `</table>`;
+
+    table += `
+
+    <br>
+
+    <input
+    type="hidden"
+    name="n"
+    value="${n}">
+
+    <button type="submit">
+        Run FCFS
+    </button>
+    `;
+
+    container.innerHTML = table;
+}
+
+</script>
+
+</body>
+</html>

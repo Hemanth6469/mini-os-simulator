@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>LOOK Disk Scheduling</title>
+
+<style>
+
+body{
+    background:#0f0f0f;
+    color:white;
+    font-family:Arial;
+    text-align:center;
+}
+
+h1{
+    margin-top:30px;
+    font-size:55px;
+}
+
+.card{
+
+    background:#1c1c1c;
+
+    width:600px;
+
+    margin:auto;
+
+    margin-top:40px;
+
+    padding:40px;
+
+    border-radius:20px;
+}
+
+input{
+
+    width:90%;
+
+    padding:15px;
+
+    margin-top:20px;
+
+    font-size:18px;
+
+    border:none;
+
+    border-radius:10px;
+}
+
+button{
+
+    margin-top:30px;
+
+    padding:15px 30px;
+
+    font-size:20px;
+
+    border:none;
+
+    border-radius:10px;
+
+    cursor:pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>LOOK Disk Scheduling</h1>
+
+<div class="card">
+
+<form
+action="http://127.0.0.1:5000/run_disk_look"
+method="POST">
+
+    <h2>Disk Requests</h2>
+
+    <input
+    type="text"
+    name="requests"
+    placeholder="98 183 37 122 14 124 65 67"
+    required>
+
+    <h2>Initial Head Position</h2>
+
+    <input
+    type="number"
+    name="head"
+    placeholder="53"
+    required>
+
+    <button type="submit">
+
+        Run LOOK Disk
+
+    </button>
+
+</form>
+
+<br>
+
+<button onclick="window.location.href='disk.html'">
+
+    Back
+
+</button>
+
+</div>
+
+</body>
+</html>
