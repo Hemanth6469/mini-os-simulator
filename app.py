@@ -6,21 +6,33 @@ app = Flask(
 )
 
 # =====================================================
-# FRONTEND ROUTES
+# HOME PAGE
 # =====================================================
 
 @app.route('/')
 def home():
-    return send_from_directory('frontend', 'index.html')
 
-
-@app.route('/<path:path>')
-def static_files(path):
-    return send_from_directory('frontend', path)
+    return send_from_directory(
+        'frontend',
+        'index.html'
+    )
 
 
 # =====================================================
-# COMMON RESULT PAGE
+# STATIC FILES
+# =====================================================
+
+@app.route('/<path:path>')
+def static_files(path):
+
+    return send_from_directory(
+        'frontend',
+        path
+    )
+
+
+# =====================================================
+# COMMON CPU RESULT PAGE
 # =====================================================
 
 def generate_cpu_page(title, at, bt, wt, tat):
@@ -41,21 +53,32 @@ def generate_cpu_page(title, at, bt, wt, tat):
         end = current + bt[i]
 
         gantt += f"""
+
         <div class="gantt-block">
+
             <h3>P{i+1}</h3>
+
             <p>{current} - {end}</p>
+
         </div>
         """
 
         current = end
 
         table += f"""
+
         <tr>
+
             <td>P{i+1}</td>
+
             <td>{at[i]}</td>
+
             <td>{bt[i]}</td>
+
             <td>{wt[i]}</td>
+
             <td>{tat[i]}</td>
+
         </tr>
         """
 
@@ -77,10 +100,6 @@ def generate_cpu_page(title, at, bt, wt, tat):
         font-family:Arial;
         text-align:center;
         padding:20px;
-    }}
-
-    h1{{
-        margin-top:20px;
     }}
 
     table{{
@@ -148,13 +167,19 @@ def generate_cpu_page(title, at, bt, wt, tat):
     <div class="cards">
 
         <div class="card">
+
             <h2>Average Waiting Time</h2>
+
             <h1>{avg_wt:.2f}</h1>
+
         </div>
 
         <div class="card">
+
             <h2>Average Turnaround Time</h2>
+
             <h1>{avg_tat:.2f}</h1>
+
         </div>
 
     </div>
@@ -162,11 +187,17 @@ def generate_cpu_page(title, at, bt, wt, tat):
     <table>
 
         <tr>
+
             <th>Process</th>
+
             <th>AT</th>
+
             <th>BT</th>
+
             <th>WT</th>
+
             <th>TAT</th>
+
         </tr>
 
         {table}
@@ -182,7 +213,9 @@ def generate_cpu_page(title, at, bt, wt, tat):
     </div>
 
     <button onclick="history.back()">
+
         Back
+
     </button>
 
     </body>
@@ -204,6 +237,7 @@ def run_fcfs():
     bt = []
 
     for i in range(n):
+
         at.append(int(request.form[f'at{i}']))
         bt.append(int(request.form[f'bt{i}']))
 
@@ -211,9 +245,11 @@ def run_fcfs():
     tat = [0] * n
 
     for i in range(1, n):
+
         wt[i] = wt[i-1] + bt[i-1]
 
     for i in range(n):
+
         tat[i] = wt[i] + bt[i]
 
     return generate_cpu_page(
@@ -238,12 +274,14 @@ def run_sjf():
     bt = []
 
     for i in range(n):
+
         at.append(int(request.form[f'at{i}']))
         bt.append(int(request.form[f'bt{i}']))
 
     processes = []
 
     for i in range(n):
+
         processes.append((bt[i], at[i], i))
 
     processes.sort()
@@ -284,6 +322,7 @@ def run_rr():
     bt = []
 
     for i in range(n):
+
         at.append(int(request.form[f'at{i}']))
         bt.append(int(request.form[f'bt{i}']))
 
@@ -321,6 +360,7 @@ def run_rr():
             break
 
     for i in range(n):
+
         tat[i] = wt[i] + bt[i]
 
     return generate_cpu_page(
@@ -354,6 +394,7 @@ def run_priority():
     processes = []
 
     for i in range(n):
+
         processes.append((pr[i], at[i], bt[i], i))
 
     processes.sort()
@@ -380,8 +421,31 @@ def run_priority():
 
 
 # =====================================================
+# MEMORY MANAGEMENT
+# =====================================================
+
+@app.route('/run_firstfit', methods=['POST'])
+def run_firstfit():
+
+    return "<h1>First Fit Working ✅</h1>"
+
+
+@app.route('/run_bestfit', methods=['POST'])
+def run_bestfit():
+
+    return "<h1>Best Fit Working ✅</h1>"
+
+
+@app.route('/run_worstfit', methods=['POST'])
+def run_worstfit():
+
+    return "<h1>Worst Fit Working ✅</h1>"
+
+
+# =====================================================
 # MAIN
 # =====================================================
 
 if __name__ == '__main__':
+
     app.run(debug=True)

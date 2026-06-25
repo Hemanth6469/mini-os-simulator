@@ -3,116 +3,155 @@
 
 <head>
 
-    <title>Worst Fit</title>
+<title>Worst Fit</title>
 
-    <style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    body{
-        background:#0f0f0f;
-        color:white;
-        font-family:Arial;
-        text-align:center;
-    }
+<style>
 
-    h1{
-        margin-top:30px;
-        font-size:55px;
-    }
+body{
+    background:#0f0f0f;
+    color:white;
+    font-family:Arial;
+    text-align:center;
+    padding:20px;
+}
 
-    .card{
+.card{
+    background:#1c1c1c;
+    width:95%;
+    max-width:900px;
+    margin:auto;
+    padding:30px;
+    border-radius:20px;
+}
 
-        background:#1c1c1c;
+input{
+    width:90%;
+    padding:15px;
+    margin-top:15px;
+    border:none;
+    border-radius:10px;
+}
 
-        width:500px;
+button{
+    padding:15px 30px;
+    margin-top:20px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+}
 
-        margin:auto;
+table{
+    width:100%;
+    margin-top:30px;
+    border-collapse:collapse;
+}
 
-        margin-top:40px;
+th,td{
+    border:1px solid #444;
+    padding:15px;
+}
 
-        padding:40px;
-
-        border-radius:20px;
-
-        box-shadow:0px 0px 20px rgba(255,255,255,0.08);
-    }
-
-    input{
-
-        width:90%;
-
-        padding:15px;
-
-        margin-top:20px;
-
-        font-size:18px;
-
-        border:none;
-
-        border-radius:10px;
-    }
-
-    button{
-
-        margin-top:30px;
-
-        padding:15px 30px;
-
-        font-size:20px;
-
-        border:none;
-
-        border-radius:10px;
-
-        cursor:pointer;
-    }
-
-    </style>
+</style>
 
 </head>
 
 <body>
 
-<h1>Worst Fit Memory Allocation</h1>
+<h1>Worst Fit Memory Management</h1>
 
 <div class="card">
 
-<form action="https://mini-os-simulator.onrender.com/run_worstfit" method="POST">
+<input type="number" id="blocks" placeholder="Number of Blocks">
 
-    <h2>Memory Blocks</h2>
+<input type="number" id="processes" placeholder="Number of Processes">
 
-    <input
-    type="text"
-    name="blocks"
-    placeholder="100 500 200 300 600"
-    required>
+<button onclick="generateInputs()">
 
-    <h2>Processes</h2>
+Generate Inputs
 
-    <input
-    type="text"
-    name="processes"
-    placeholder="212 417 112 426"
-    required>
+</button>
 
-    <br>
+<form action="/run_worstfit" method="POST">
 
-    <button type="submit">
-
-        Run Worst Fit
-
-    </button>
+<div id="inputs"></div>
 
 </form>
 
-<br>
+<button onclick="history.back()">
 
-<button onclick="window.location.href='memory.html'">
-
-    Back
+Back
 
 </button>
 
 </div>
+
+<script>
+
+function generateInputs(){
+
+    let b = document.getElementById("blocks").value;
+    let p = document.getElementById("processes").value;
+
+    let html = `
+
+    <input type="hidden" name="blocks" value="${b}">
+    <input type="hidden" name="processes" value="${p}">
+
+    <table>
+
+    <tr>
+        <th>Block Sizes</th>
+    </tr>
+    `;
+
+    for(let i=0;i<b;i++){
+
+        html += `
+        <tr>
+            <td>
+                <input type="number" name="block${i}" required>
+            </td>
+        </tr>
+        `;
+    }
+
+    html += `
+    </table>
+
+    <table>
+
+    <tr>
+        <th>Process Sizes</th>
+    </tr>
+    `;
+
+    for(let i=0;i<p;i++){
+
+        html += `
+        <tr>
+            <td>
+                <input type="number" name="process${i}" required>
+            </td>
+        </tr>
+        `;
+    }
+
+    html += `
+    </table>
+
+    <button type="submit">
+
+    Run Worst Fit
+
+    </button>
+    `;
+
+    document.getElementById("inputs").innerHTML = html;
+}
+
+</script>
 
 </body>
 </html>
