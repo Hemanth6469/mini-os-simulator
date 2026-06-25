@@ -459,8 +459,6 @@ def memory_output(title, processes, allocation):
 
     <title>{title}</title>
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <style>
 
     body{{
@@ -493,7 +491,6 @@ def memory_output(title, processes, allocation):
         border:none;
         border-radius:10px;
         cursor:pointer;
-        font-size:18px;
     }}
 
     </style>
@@ -547,15 +544,11 @@ def run_firstfit():
 
     for i in range(b):
 
-        blocks.append(
-            int(request.form[f'block{i}'])
-        )
+        blocks.append(int(request.form[f'block{i}']))
 
     for i in range(p):
 
-        processes.append(
-            int(request.form[f'process{i}'])
-        )
+        processes.append(int(request.form[f'process{i}']))
 
     allocation = [-1] * p
 
@@ -568,9 +561,7 @@ def run_firstfit():
             if temp[j] >= processes[i]:
 
                 allocation[i] = j
-
                 temp[j] -= processes[i]
-
                 break
 
     return memory_output(
@@ -595,15 +586,11 @@ def run_bestfit():
 
     for i in range(b):
 
-        blocks.append(
-            int(request.form[f'block{i}'])
-        )
+        blocks.append(int(request.form[f'block{i}']))
 
     for i in range(p):
 
-        processes.append(
-            int(request.form[f'process{i}'])
-        )
+        processes.append(int(request.form[f'process{i}']))
 
     allocation = [-1] * p
 
@@ -624,7 +611,6 @@ def run_bestfit():
         if best != -1:
 
             allocation[i] = best
-
             temp[best] -= processes[i]
 
     return memory_output(
@@ -649,15 +635,11 @@ def run_worstfit():
 
     for i in range(b):
 
-        blocks.append(
-            int(request.form[f'block{i}'])
-        )
+        blocks.append(int(request.form[f'block{i}']))
 
     for i in range(p):
 
-        processes.append(
-            int(request.form[f'process{i}'])
-        )
+        processes.append(int(request.form[f'process{i}']))
 
     allocation = [-1] * p
 
@@ -678,7 +660,6 @@ def run_worstfit():
         if worst != -1:
 
             allocation[i] = worst
-
             temp[worst] -= processes[i]
 
     return memory_output(
@@ -695,7 +676,152 @@ def run_worstfit():
 @app.route('/run_deadlock', methods=['POST'])
 def run_deadlock():
 
-    return """
+    n = int(request.form['processes'])
+    r = int(request.form['resources'])
+
+    allocation = []
+    maximum = []
+
+    for i in range(n):
+
+        allocation.append(
+            list(
+                map(
+                    int,
+                    request.form[f'allocation{i}'].split()
+                )
+            )
+        )
+
+    for i in range(n):
+
+        maximum.append(
+            list(
+                map(
+                    int,
+                    request.form[f'maximum{i}'].split()
+                )
+            )
+        )
+
+    available = list(
+        map(
+            int,
+            request.form['available'].split()
+        )
+    )
+
+    need = []
+
+    for i in range(n):
+
+        row = []
+
+        for j in range(r):
+
+            row.append(
+                maximum[i][j] - allocation[i][j]
+            )
+
+        need.append(row)
+
+    finish = [False] * n
+
+    safe = []
+
+    work = available.copy()
+
+    while True:
+
+        found = False
+
+        for i in range(n):
+
+            if not finish[i]:
+
+                possible = True
+
+                for j in range(r):
+
+                    if need[i][j] > work[j]:
+
+                        possible = False
+                        break
+
+                if possible:
+
+                    for j in range(r):
+
+                        work[j] += allocation[i][j]
+
+                    safe.append(f"P{i}")
+
+                    finish[i] = True
+
+                    found = True
+
+        if not found:
+            break
+
+    deadlock = False
+
+    for i in range(n):
+
+        if not finish[i]:
+
+            deadlock = True
+
+    rows = ""
+
+    for i in range(n):
+
+        rows += f"""
+
+        <tr>
+
+            <td>P{i}</td>
+
+            <td>{allocation[i]}</td>
+
+            <td>{maximum[i]}</td>
+
+            <td>{need[i]}</td>
+
+        </tr>
+        """
+
+    if deadlock:
+
+        status = """
+
+        <h1 style='color:red;'>
+
+        Deadlock Detected ❌
+
+        </h1>
+        """
+
+    else:
+
+        sequence = " ➜ ".join(safe)
+
+        status = f"""
+
+        <h1 style='color:lime;'>
+
+        Safe State ✅
+
+        </h1>
+
+        <h2>
+
+        Safe Sequence:
+        {sequence}
+
+        </h2>
+        """
+
+    return f"""
 
     <html>
 
@@ -705,26 +831,37 @@ def run_deadlock():
 
     <style>
 
-    body{
+    body{{
         background:#0f0f0f;
         color:white;
         font-family:Arial;
         text-align:center;
-        padding:40px;
-    }
+        padding:20px;
+    }}
 
-    h1{
-        color:lime;
-    }
+    table{{
+        width:95%;
+        margin:auto;
+        margin-top:40px;
+        border-collapse:collapse;
+    }}
 
-    button{
+    th,td{{
+        border:1px solid #444;
+        padding:15px;
+    }}
+
+    th{{
+        background:#333;
+    }}
+
+    button{{
         margin-top:40px;
         padding:15px 30px;
         border:none;
         border-radius:10px;
-        font-size:18px;
         cursor:pointer;
-    }
+    }}
 
     </style>
 
@@ -732,7 +869,27 @@ def run_deadlock():
 
     <body>
 
-    <h1>Deadlock Detection Working ✅</h1>
+    <h1>Deadlock Detection Result</h1>
+
+    {status}
+
+    <table>
+
+        <tr>
+
+            <th>Process</th>
+
+            <th>Allocation</th>
+
+            <th>Maximum</th>
+
+            <th>Need</th>
+
+        </tr>
+
+        {rows}
+
+    </table>
 
     <button onclick="history.back()">
 
