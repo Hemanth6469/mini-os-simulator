@@ -1,6 +1,21 @@
-from flask import Flask, request
+from flask import Flask, request, send_from_directory
 
-app = Flask(__name__)
+app = Flask(
+    __name__,
+    static_folder='frontend'
+)
+
+# =====================================================
+# HOME PAGE
+# =====================================================
+
+@app.route('/')
+def home():
+
+    return send_from_directory(
+        'frontend',
+        'index.html'
+    )
 
 
 # =====================================================
@@ -91,7 +106,6 @@ def generate_disk_page(title, sequence, total_seek):
         background:#181818;
         border-radius:20px;
         padding:30px;
-
         box-shadow:0px 0px 25px rgba(255,255,255,0.08);
     }}
 
@@ -119,21 +133,15 @@ def generate_disk_page(title, sequence, total_seek):
 
     .block{{
         background:#242424;
-
         padding:30px;
-
         border-radius:18px;
-
         min-width:110px;
-
         transition:0.4s;
-
         box-shadow:0px 0px 15px rgba(255,255,255,0.05);
     }}
 
     .block:hover{{
         transform:translateY(-10px) scale(1.05);
-
         box-shadow:0px 0px 30px rgba(255,255,255,0.18);
     }}
 
@@ -154,43 +162,14 @@ def generate_disk_page(title, sequence, total_seek):
         font-weight:bold;
     }}
 
-    .point{{
-        animation:pop 1s ease;
-    }}
-
-    @keyframes pop{{
-        from{{
-            transform:scale(0);
-            opacity:0;
-        }}
-
-        to{{
-            transform:scale(1);
-            opacity:1;
-        }}
-    }}
-
     button{{
         margin-top:70px;
         margin-bottom:50px;
-
         padding:18px 35px;
-
         font-size:22px;
-
         border:none;
-
         border-radius:12px;
-
         cursor:pointer;
-
-        transition:0.4s;
-    }}
-
-    button:hover{{
-        transform:scale(1.08);
-
-        box-shadow:0px 0px 25px rgba(255,255,255,0.25);
     }}
 
     </style>
@@ -211,8 +190,6 @@ def generate_disk_page(title, sequence, total_seek):
 
     <svg width="1800" height="500">
 
-        <!-- AXIS -->
-
         <line
             x1="60"
             y1="380"
@@ -230,8 +207,6 @@ def generate_disk_page(title, sequence, total_seek):
             stroke="white"
             stroke-width="2"
         />
-
-        <!-- GRAPH LINE -->
 
         <polyline
             class="line"
@@ -251,17 +226,12 @@ def generate_disk_page(title, sequence, total_seek):
 
         html += f"""
 
-        <!-- POINT -->
-
         <circle
-            class="point"
             cx="{x}"
             cy="{y}"
             r="10"
             fill="white"
         />
-
-        <!-- LABEL -->
 
         <text
             x="{x-15}"
@@ -270,8 +240,6 @@ def generate_disk_page(title, sequence, total_seek):
             {value}
 
         </text>
-
-        <!-- X LABEL -->
 
         <text
             x="{x-10}"
@@ -308,16 +276,6 @@ def generate_disk_page(title, sequence, total_seek):
     """
 
     return html
-
-
-# =====================================================
-# HOME
-# =====================================================
-
-@app.route('/')
-def home():
-
-    return "<h1>Disk Scheduling Simulator Running</h1>"
 
 
 # =====================================================
@@ -388,260 +346,6 @@ def run_disk_sstf():
 
     return generate_disk_page(
         "SSTF Disk Scheduling Result",
-        sequence,
-        total_seek
-    )
-
-
-# =====================================================
-# SCAN DISK
-# =====================================================
-
-@app.route('/run_disk_scan', methods=['POST'])
-def run_disk_scan():
-
-    requests = list(map(
-        int,
-        request.form['requests'].split()
-    ))
-
-    head = int(request.form['head'])
-
-    disk_size = 200
-
-    left = []
-    right = []
-
-    for req in requests:
-
-        if req < head:
-            left.append(req)
-        else:
-            right.append(req)
-
-    left.sort(reverse=True)
-    right.sort()
-
-    sequence = [head]
-
-    total_seek = 0
-
-    current = head
-
-    for req in right:
-
-        total_seek += abs(req - current)
-
-        current = req
-
-        sequence.append(req)
-
-    total_seek += abs((disk_size - 1) - current)
-
-    current = disk_size - 1
-
-    sequence.append(current)
-
-    for req in left:
-
-        total_seek += abs(req - current)
-
-        current = req
-
-        sequence.append(req)
-
-    return generate_disk_page(
-        "SCAN Disk Scheduling Result",
-        sequence,
-        total_seek
-    )
-
-
-# =====================================================
-# C-SCAN DISK
-# =====================================================
-
-@app.route('/run_disk_cscan', methods=['POST'])
-def run_disk_cscan():
-
-    requests = list(map(
-        int,
-        request.form['requests'].split()
-    ))
-
-    head = int(request.form['head'])
-
-    disk_size = 200
-
-    left = []
-    right = []
-
-    for req in requests:
-
-        if req < head:
-            left.append(req)
-        else:
-            right.append(req)
-
-    left.sort()
-    right.sort()
-
-    sequence = [head]
-
-    total_seek = 0
-
-    current = head
-
-    for req in right:
-
-        total_seek += abs(req - current)
-
-        current = req
-
-        sequence.append(req)
-
-    total_seek += abs((disk_size - 1) - current)
-
-    current = disk_size - 1
-
-    sequence.append(current)
-
-    total_seek += current
-
-    current = 0
-
-    sequence.append(current)
-
-    for req in left:
-
-        total_seek += abs(req - current)
-
-        current = req
-
-        sequence.append(req)
-
-    return generate_disk_page(
-        "C-SCAN Disk Scheduling Result",
-        sequence,
-        total_seek
-    )
-
-
-# =====================================================
-# LOOK DISK
-# =====================================================
-
-@app.route('/run_disk_look', methods=['POST'])
-def run_disk_look():
-
-    requests = list(map(
-        int,
-        request.form['requests'].split()
-    ))
-
-    head = int(request.form['head'])
-
-    left = []
-    right = []
-
-    for req in requests:
-
-        if req < head:
-            left.append(req)
-        else:
-            right.append(req)
-
-    left.sort(reverse=True)
-    right.sort()
-
-    sequence = [head]
-
-    total_seek = 0
-
-    current = head
-
-    for req in right:
-
-        total_seek += abs(req - current)
-
-        current = req
-
-        sequence.append(req)
-
-    for req in left:
-
-        total_seek += abs(req - current)
-
-        current = req
-
-        sequence.append(req)
-
-    return generate_disk_page(
-        "LOOK Disk Scheduling Result",
-        sequence,
-        total_seek
-    )
-
-
-# =====================================================
-# C-LOOK DISK
-# =====================================================
-
-@app.route('/run_disk_clook', methods=['POST'])
-def run_disk_clook():
-
-    requests = list(map(
-        int,
-        request.form['requests'].split()
-    ))
-
-    head = int(request.form['head'])
-
-    left = []
-    right = []
-
-    for req in requests:
-
-        if req < head:
-            left.append(req)
-        else:
-            right.append(req)
-
-    left.sort()
-    right.sort()
-
-    sequence = [head]
-
-    total_seek = 0
-
-    current = head
-
-    for req in right:
-
-        total_seek += abs(req - current)
-
-        current = req
-
-        sequence.append(req)
-
-    if left:
-
-        total_seek += abs(current - left[0])
-
-        current = left[0]
-
-        sequence.append(current)
-
-    for req in left[1:]:
-
-        total_seek += abs(req - current)
-
-        current = req
-
-        sequence.append(req)
-
-    return generate_disk_page(
-        "C-LOOK Disk Scheduling Result",
         sequence,
         total_seek
     )
