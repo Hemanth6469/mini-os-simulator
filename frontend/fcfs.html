@@ -3,52 +3,136 @@
 
 <head>
 
-    <title>FCFS Scheduling</title>
+<title>FCFS Scheduling</title>
 
-    <link rel="stylesheet" href="css/style.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    background:#0f0f0f;
+    color:white;
+    font-family:Arial;
+    text-align:center;
+    padding:20px;
+}
+
+h1{
+    margin-top:20px;
+    font-size:55px;
+}
+
+.card{
+    background:#1c1c1c;
+    width:95%;
+    max-width:900px;
+    margin:auto;
+    margin-top:40px;
+    padding:40px 25px;
+    border-radius:20px;
+}
+
+h2{
+    margin-bottom:20px;
+}
+
+input{
+    width:100%;
+    padding:15px;
+    font-size:20px;
+    border:none;
+    border-radius:10px;
+    margin-top:10px;
+}
+
+button{
+    margin-top:30px;
+    padding:15px 30px;
+    font-size:20px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+table{
+    width:100%;
+    margin-top:40px;
+    border-collapse:collapse;
+}
+
+th,td{
+    border:1px solid #444;
+    padding:15px;
+}
+
+th{
+    background:#333;
+}
+
+@media(max-width:768px){
+
+    h1{
+        font-size:36px;
+    }
+
+    table{
+        font-size:14px;
+    }
+
+    input{
+        font-size:16px;
+    }
+
+    button{
+        width:100%;
+        font-size:18px;
+    }
+}
+
+</style>
 
 </head>
 
 <body>
 
-<div class="container">
+<h1>FCFS Scheduling</h1>
 
-    <h1>FCFS Scheduling</h1>
+<div class="card">
 
-    <div class="card">
+<h2>Enter Number of Processes</h2>
 
-        <h2>Enter Number of Processes</h2>
+<input
+type="number"
+id="num"
+placeholder="Number of Processes"
+required>
 
-        <input
-        type="number"
-        id="numProcesses"
-        placeholder="Number of Processes">
+<button onclick="generateInputs()">
 
-        <br><br>
+Generate Inputs
 
-        <button onclick="generateInputs()">
-            Generate Inputs
-        </button>
+</button>
 
-    </div>
+<form
+action="/run_fcfs"
+method="POST"
+id="fcfsForm">
 
-    <br>
+<div id="inputs"></div>
 
-    <form action="/run_fcfs" method="POST">
+</form>
 
-        <div id="processInputs"></div>
+<button onclick="history.back()">
 
-    </form>
+Back
 
-    <br>
-
-    <button
-    type="button"
-    onclick="window.location.href='cpu.html'">
-
-        Back
-
-    </button>
+</button>
 
 </div>
 
@@ -56,69 +140,67 @@
 
 function generateInputs(){
 
-    let n = document.getElementById(
-        "numProcesses"
-    ).value;
+    let n = document.getElementById("num").value;
 
-    let container = document.getElementById(
-        "processInputs"
-    );
+    let html = "";
 
-    container.innerHTML = "";
-
-    let table = `
-    <table>
-
-        <tr>
-            <th>Process</th>
-            <th>Arrival Time</th>
-            <th>Burst Time</th>
-        </tr>
+    html += `
+    <input
+    type="hidden"
+    name="n"
+    value="${n}">
     `;
 
-    for(let i=1;i<=n;i++){
+    html += `
+    <table>
 
-        table += `
+    <tr>
+        <th>Process</th>
+        <th>Arrival Time</th>
+        <th>Burst Time</th>
+    </tr>
+    `;
 
+    for(let i=0;i<n;i++){
+
+        html += `
         <tr>
 
-            <td>P${i}</td>
+            <td>P${i+1}</td>
 
             <td>
+
                 <input
                 type="number"
-                name="arrival${i}"
+                name="at${i}"
                 required>
+
             </td>
 
             <td>
+
                 <input
                 type="number"
-                name="burst${i}"
+                name="bt${i}"
                 required>
+
             </td>
 
         </tr>
         `;
     }
 
-    table += `</table>`;
-
-    table += `
-
-    <br>
-
-    <input
-    type="hidden"
-    name="n"
-    value="${n}">
+    html += `
+    </table>
 
     <button type="submit">
-        Run FCFS
+
+    Run FCFS
+
     </button>
     `;
 
-    container.innerHTML = table;
+    document.getElementById("inputs").innerHTML = html;
 }
 
 </script>
