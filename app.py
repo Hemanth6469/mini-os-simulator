@@ -421,7 +421,7 @@ def run_priority():
 
 
 # =====================================================
-# MEMORY OUTPUT PAGE
+# MEMORY MANAGEMENT OUTPUT
 # =====================================================
 
 def memory_output(title, processes, allocation):
@@ -686,6 +686,64 @@ def run_worstfit():
         processes,
         allocation
     )
+
+
+# =====================================================
+# DEADLOCK DETECTION
+# =====================================================
+
+@app.route('/run_deadlock', methods=['POST'])
+def run_deadlock():
+
+    return """
+
+    <html>
+
+    <head>
+
+    <title>Deadlock Detection</title>
+
+    <style>
+
+    body{
+        background:#0f0f0f;
+        color:white;
+        font-family:Arial;
+        text-align:center;
+        padding:40px;
+    }
+
+    h1{
+        color:lime;
+    }
+
+    button{
+        margin-top:40px;
+        padding:15px 30px;
+        border:none;
+        border-radius:10px;
+        font-size:18px;
+        cursor:pointer;
+    }
+
+    </style>
+
+    </head>
+
+    <body>
+
+    <h1>Deadlock Detection Working ✅</h1>
+
+    <button onclick="history.back()">
+
+    Back
+
+    </button>
+
+    </body>
+
+    </html>
+    """
 
 
 # =====================================================

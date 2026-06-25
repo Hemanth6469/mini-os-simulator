@@ -3,87 +3,55 @@
 
 <head>
 
-    <title>Deadlock Detection</title>
+<title>Deadlock Detection</title>
 
-    <style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    body{
-        background:#0f0f0f;
-        color:white;
-        font-family:Arial;
-        text-align:center;
-    }
+<style>
 
-    h1{
-        margin-top:30px;
-        font-size:55px;
-    }
+body{
+    background:#0f0f0f;
+    color:white;
+    font-family:Arial;
+    text-align:center;
+    padding:20px;
+}
 
-    .card{
+.card{
+    background:#1c1c1c;
+    width:95%;
+    max-width:1000px;
+    margin:auto;
+    padding:30px;
+    border-radius:20px;
+}
 
-        background:#1c1c1c;
+input{
+    width:90%;
+    padding:15px;
+    margin-top:15px;
+    border:none;
+    border-radius:10px;
+}
 
-        width:700px;
+textarea{
+    width:90%;
+    height:60px;
+    padding:15px;
+    margin-top:15px;
+    border:none;
+    border-radius:10px;
+}
 
-        margin:auto;
+button{
+    padding:15px 30px;
+    margin-top:20px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+}
 
-        margin-top:40px;
-
-        padding:40px;
-
-        border-radius:20px;
-
-        box-shadow:0px 0px 20px rgba(255,255,255,0.08);
-    }
-
-    input{
-
-        width:90%;
-
-        padding:15px;
-
-        margin-top:20px;
-
-        font-size:18px;
-
-        border:none;
-
-        border-radius:10px;
-    }
-
-    textarea{
-
-        width:90%;
-
-        height:120px;
-
-        padding:15px;
-
-        margin-top:20px;
-
-        font-size:18px;
-
-        border:none;
-
-        border-radius:10px;
-    }
-
-    button{
-
-        margin-top:30px;
-
-        padding:15px 30px;
-
-        font-size:20px;
-
-        border:none;
-
-        border-radius:10px;
-
-        cursor:pointer;
-    }
-
-    </style>
+</style>
 
 </head>
 
@@ -93,50 +61,97 @@
 
 <div class="card">
 
-<form action="https://mini-os-simulator.onrender.com/run_deadlock" method="POST">
+<input
+type="number"
+id="processes"
+placeholder="Number of Processes">
 
-    <h2>Allocation Matrix</h2>
+<input
+type="number"
+id="resources"
+placeholder="Number of Resources">
 
-    <textarea
-    name="allocation"
-    placeholder="0 1 0
-2 0 0
-3 0 2"></textarea>
+<button onclick="generateInputs()">
 
-    <h2>Maximum Matrix</h2>
+Generate Inputs
 
-    <textarea
-    name="maximum"
-    placeholder="7 5 3
-3 2 2
-9 0 2"></textarea>
+</button>
+
+<form
+action="/run_deadlock"
+method="POST">
+
+<div id="inputs"></div>
+
+</form>
+
+<button onclick="history.back()">
+
+Back
+
+</button>
+
+</div>
+
+<script>
+
+function generateInputs(){
+
+    let p = document.getElementById("processes").value;
+    let r = document.getElementById("resources").value;
+
+    let html = `
+
+    <input type="hidden" name="processes" value="${p}">
+    <input type="hidden" name="resources" value="${r}">
+    `;
+
+    html += `<h2>Allocation Matrix</h2>`;
+
+    for(let i=0;i<p;i++){
+
+        html += `
+        <textarea
+        name="allocation${i}"
+        placeholder="Example: 0 1 0"
+        required></textarea>
+        `;
+    }
+
+    html += `<h2>Maximum Matrix</h2>`;
+
+    for(let i=0;i<p;i++){
+
+        html += `
+        <textarea
+        name="maximum${i}"
+        placeholder="Example: 7 5 3"
+        required></textarea>
+        `;
+    }
+
+    html += `
 
     <h2>Available Resources</h2>
 
-    <input
-    type="text"
+    <textarea
     name="available"
-    placeholder="3 3 2">
+    placeholder="Example: 3 3 2"
+    required></textarea>
 
     <br>
 
     <button type="submit">
 
-        Run Banker's Algorithm
+    Run Deadlock Detection
 
     </button>
+    `;
 
-</form>
+    document.getElementById("inputs").innerHTML = html;
+}
 
-<br>
-
-<button onclick="window.location.href='index.html'">
-
-    Back
-
-</button>
-
-</div>
+</script>
 
 </body>
 </html>
