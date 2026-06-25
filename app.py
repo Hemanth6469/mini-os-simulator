@@ -421,25 +421,271 @@ def run_priority():
 
 
 # =====================================================
-# MEMORY MANAGEMENT
+# MEMORY OUTPUT PAGE
+# =====================================================
+
+def memory_output(title, processes, allocation):
+
+    rows = ""
+
+    for i in range(len(processes)):
+
+        if allocation[i] != -1:
+
+            block = f"Block {allocation[i]+1}"
+
+        else:
+
+            block = "Not Allocated"
+
+        rows += f"""
+
+        <tr>
+
+            <td>P{i+1}</td>
+
+            <td>{processes[i]}</td>
+
+            <td>{block}</td>
+
+        </tr>
+        """
+
+    return f"""
+
+    <html>
+
+    <head>
+
+    <title>{title}</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+
+    body{{
+        background:#0f0f0f;
+        color:white;
+        font-family:Arial;
+        text-align:center;
+        padding:20px;
+    }}
+
+    table{{
+        width:90%;
+        margin:auto;
+        margin-top:40px;
+        border-collapse:collapse;
+    }}
+
+    th,td{{
+        border:1px solid #444;
+        padding:15px;
+    }}
+
+    th{{
+        background:#333;
+    }}
+
+    button{{
+        margin-top:40px;
+        padding:15px 30px;
+        border:none;
+        border-radius:10px;
+        cursor:pointer;
+        font-size:18px;
+    }}
+
+    </style>
+
+    </head>
+
+    <body>
+
+    <h1>{title}</h1>
+
+    <table>
+
+        <tr>
+
+            <th>Process</th>
+
+            <th>Process Size</th>
+
+            <th>Allocated Block</th>
+
+        </tr>
+
+        {rows}
+
+    </table>
+
+    <button onclick="history.back()">
+
+    Back
+
+    </button>
+
+    </body>
+
+    </html>
+    """
+
+
+# =====================================================
+# FIRST FIT
 # =====================================================
 
 @app.route('/run_firstfit', methods=['POST'])
 def run_firstfit():
 
-    return "<h1>First Fit Working ✅</h1>"
+    b = int(request.form['blocks'])
+    p = int(request.form['processes'])
 
+    blocks = []
+    processes = []
+
+    for i in range(b):
+
+        blocks.append(
+            int(request.form[f'block{i}'])
+        )
+
+    for i in range(p):
+
+        processes.append(
+            int(request.form[f'process{i}'])
+        )
+
+    allocation = [-1] * p
+
+    temp = blocks.copy()
+
+    for i in range(p):
+
+        for j in range(b):
+
+            if temp[j] >= processes[i]:
+
+                allocation[i] = j
+
+                temp[j] -= processes[i]
+
+                break
+
+    return memory_output(
+        "First Fit Result",
+        processes,
+        allocation
+    )
+
+
+# =====================================================
+# BEST FIT
+# =====================================================
 
 @app.route('/run_bestfit', methods=['POST'])
 def run_bestfit():
 
-    return "<h1>Best Fit Working ✅</h1>"
+    b = int(request.form['blocks'])
+    p = int(request.form['processes'])
 
+    blocks = []
+    processes = []
+
+    for i in range(b):
+
+        blocks.append(
+            int(request.form[f'block{i}'])
+        )
+
+    for i in range(p):
+
+        processes.append(
+            int(request.form[f'process{i}'])
+        )
+
+    allocation = [-1] * p
+
+    temp = blocks.copy()
+
+    for i in range(p):
+
+        best = -1
+
+        for j in range(b):
+
+            if temp[j] >= processes[i]:
+
+                if best == -1 or temp[j] < temp[best]:
+
+                    best = j
+
+        if best != -1:
+
+            allocation[i] = best
+
+            temp[best] -= processes[i]
+
+    return memory_output(
+        "Best Fit Result",
+        processes,
+        allocation
+    )
+
+
+# =====================================================
+# WORST FIT
+# =====================================================
 
 @app.route('/run_worstfit', methods=['POST'])
 def run_worstfit():
 
-    return "<h1>Worst Fit Working ✅</h1>"
+    b = int(request.form['blocks'])
+    p = int(request.form['processes'])
+
+    blocks = []
+    processes = []
+
+    for i in range(b):
+
+        blocks.append(
+            int(request.form[f'block{i}'])
+        )
+
+    for i in range(p):
+
+        processes.append(
+            int(request.form[f'process{i}'])
+        )
+
+    allocation = [-1] * p
+
+    temp = blocks.copy()
+
+    for i in range(p):
+
+        worst = -1
+
+        for j in range(b):
+
+            if temp[j] >= processes[i]:
+
+                if worst == -1 or temp[j] > temp[worst]:
+
+                    worst = j
+
+        if worst != -1:
+
+            allocation[i] = worst
+
+            temp[worst] -= processes[i]
+
+    return memory_output(
+        "Worst Fit Result",
+        processes,
+        allocation
+    )
 
 
 # =====================================================
