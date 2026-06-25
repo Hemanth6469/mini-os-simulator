@@ -94,67 +94,67 @@ def generate_cpu_page(title, at, bt, wt, tat):
 
     <style>
 
-    body{{
+    body{
         background:#0f0f0f;
         color:white;
         font-family:Arial;
         text-align:center;
         padding:20px;
-    }}
+    }
 
-    table{{
+    table{
         width:100%;
         margin-top:40px;
         border-collapse:collapse;
-    }}
+    }
 
-    th,td{{
+    th,td{
         border:1px solid #444;
         padding:15px;
-    }}
+    }
 
-    th{{
+    th{
         background:#333;
-    }}
+    }
 
-    .cards{{
+    .cards{
         display:flex;
         justify-content:center;
         gap:25px;
         flex-wrap:wrap;
         margin-top:40px;
-    }}
+    }
 
-    .card{{
+    .card{
         background:#1f1f1f;
         padding:30px;
         border-radius:15px;
         min-width:250px;
-    }}
+    }
 
-    .gantt{{
+    .gantt{
         display:flex;
         justify-content:center;
         gap:20px;
         flex-wrap:wrap;
         margin-top:50px;
-    }}
+    }
 
-    .gantt-block{{
+    .gantt-block{
         background:#222;
         padding:25px;
         border-radius:15px;
         min-width:120px;
-    }}
+    }
 
-    button{{
+    button{
         margin-top:50px;
         padding:15px 30px;
         font-size:20px;
         border:none;
         border-radius:10px;
         cursor:pointer;
-    }}
+    }
 
     </style>
 
@@ -262,193 +262,22 @@ def run_fcfs():
 
 
 # =====================================================
-# SJF
+# COMMON DISK OUTPUT PAGE
 # =====================================================
 
-@app.route('/run_sjf', methods=['POST'])
-def run_sjf():
+def disk_output(title, sequence, total_seek):
 
-    n = int(request.form['n'])
+    blocks = ""
 
-    at = []
-    bt = []
+    for value in sequence:
 
-    for i in range(n):
+        blocks += f"""
 
-        at.append(int(request.form[f'at{i}']))
-        bt.append(int(request.form[f'bt{i}']))
+        <div class="block">
 
-    processes = []
+            {value}
 
-    for i in range(n):
-
-        processes.append((bt[i], at[i], i))
-
-    processes.sort()
-
-    wt = [0] * n
-    tat = [0] * n
-
-    current = 0
-
-    for bt_val, at_val, idx in processes:
-
-        wt[idx] = current
-        tat[idx] = wt[idx] + bt_val
-
-        current += bt_val
-
-    return generate_cpu_page(
-        "SJF Scheduling Result",
-        at,
-        bt,
-        wt,
-        tat
-    )
-
-
-# =====================================================
-# ROUND ROBIN
-# =====================================================
-
-@app.route('/run_rr', methods=['POST'])
-def run_rr():
-
-    n = int(request.form['n'])
-
-    tq = int(request.form['tq'])
-
-    at = []
-    bt = []
-
-    for i in range(n):
-
-        at.append(int(request.form[f'at{i}']))
-        bt.append(int(request.form[f'bt{i}']))
-
-    rem = bt.copy()
-
-    wt = [0] * n
-    tat = [0] * n
-
-    time = 0
-
-    while True:
-
-        done = True
-
-        for i in range(n):
-
-            if rem[i] > 0:
-
-                done = False
-
-                if rem[i] > tq:
-
-                    time += tq
-                    rem[i] -= tq
-
-                else:
-
-                    time += rem[i]
-
-                    wt[i] = time - bt[i]
-
-                    rem[i] = 0
-
-        if done:
-            break
-
-    for i in range(n):
-
-        tat[i] = wt[i] + bt[i]
-
-    return generate_cpu_page(
-        "Round Robin Result",
-        at,
-        bt,
-        wt,
-        tat
-    )
-
-
-# =====================================================
-# PRIORITY
-# =====================================================
-
-@app.route('/run_priority', methods=['POST'])
-def run_priority():
-
-    n = int(request.form['n'])
-
-    at = []
-    bt = []
-    pr = []
-
-    for i in range(n):
-
-        at.append(int(request.form[f'at{i}']))
-        bt.append(int(request.form[f'bt{i}']))
-        pr.append(int(request.form[f'pr{i}']))
-
-    processes = []
-
-    for i in range(n):
-
-        processes.append((pr[i], at[i], bt[i], i))
-
-    processes.sort()
-
-    wt = [0] * n
-    tat = [0] * n
-
-    current = 0
-
-    for priority, at_val, bt_val, idx in processes:
-
-        wt[idx] = current
-        tat[idx] = wt[idx] + bt_val
-
-        current += bt_val
-
-    return generate_cpu_page(
-        "Priority Scheduling Result",
-        at,
-        bt,
-        wt,
-        tat
-    )
-
-
-# =====================================================
-# MEMORY MANAGEMENT OUTPUT
-# =====================================================
-
-def memory_output(title, processes, allocation):
-
-    rows = ""
-
-    for i in range(len(processes)):
-
-        if allocation[i] != -1:
-
-            block = f"Block {allocation[i]+1}"
-
-        else:
-
-            block = "Not Allocated"
-
-        rows += f"""
-
-        <tr>
-
-            <td>P{i+1}</td>
-
-            <td>{processes[i]}</td>
-
-            <td>{block}</td>
-
-        </tr>
+        </div>
         """
 
     return f"""
@@ -459,39 +288,53 @@ def memory_output(title, processes, allocation):
 
     <title>{title}</title>
 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <style>
 
-    body{{
+    body{
         background:#0f0f0f;
         color:white;
         font-family:Arial;
         text-align:center;
         padding:20px;
-    }}
+    }
 
-    table{{
-        width:90%;
-        margin:auto;
-        margin-top:40px;
-        border-collapse:collapse;
-    }}
+    .seek{
+        font-size:35px;
+        color:#00ff99;
+        margin-top:30px;
+    }
 
-    th,td{{
-        border:1px solid #444;
-        padding:15px;
-    }}
+    .sequence{
+        display:flex;
+        justify-content:center;
+        gap:20px;
+        flex-wrap:wrap;
+        margin-top:50px;
+    }
 
-    th{{
-        background:#333;
-    }}
+    .block{
+        background:#1f1f1f;
+        padding:30px;
+        border-radius:15px;
+        min-width:100px;
+        font-size:28px;
+        transition:0.3s;
+    }
 
-    button{{
-        margin-top:40px;
+    .block:hover{
+        transform:scale(1.08);
+    }
+
+    button{
+        margin-top:50px;
         padding:15px 30px;
+        font-size:18px;
         border:none;
         border-radius:10px;
         cursor:pointer;
-    }}
+    }
 
     </style>
 
@@ -501,21 +344,17 @@ def memory_output(title, processes, allocation):
 
     <h1>{title}</h1>
 
-    <table>
+    <div class="seek">
 
-        <tr>
+        Total Seek Time = {total_seek}
 
-            <th>Process</th>
+    </div>
 
-            <th>Process Size</th>
+    <div class="sequence">
 
-            <th>Allocated Block</th>
+        {blocks}
 
-        </tr>
-
-        {rows}
-
-    </table>
+    </div>
 
     <button onclick="history.back()">
 
@@ -530,377 +369,328 @@ def memory_output(title, processes, allocation):
 
 
 # =====================================================
-# FIRST FIT
+# DISK FCFS
 # =====================================================
 
-@app.route('/run_firstfit', methods=['POST'])
-def run_firstfit():
+@app.route('/run_disk_fcfs', methods=['POST'])
+def run_disk_fcfs():
 
-    b = int(request.form['blocks'])
-    p = int(request.form['processes'])
-
-    blocks = []
-    processes = []
-
-    for i in range(b):
-
-        blocks.append(int(request.form[f'block{i}']))
-
-    for i in range(p):
-
-        processes.append(int(request.form[f'process{i}']))
-
-    allocation = [-1] * p
-
-    temp = blocks.copy()
-
-    for i in range(p):
-
-        for j in range(b):
-
-            if temp[j] >= processes[i]:
-
-                allocation[i] = j
-                temp[j] -= processes[i]
-                break
-
-    return memory_output(
-        "First Fit Result",
-        processes,
-        allocation
-    )
-
-
-# =====================================================
-# BEST FIT
-# =====================================================
-
-@app.route('/run_bestfit', methods=['POST'])
-def run_bestfit():
-
-    b = int(request.form['blocks'])
-    p = int(request.form['processes'])
-
-    blocks = []
-    processes = []
-
-    for i in range(b):
-
-        blocks.append(int(request.form[f'block{i}']))
-
-    for i in range(p):
-
-        processes.append(int(request.form[f'process{i}']))
-
-    allocation = [-1] * p
-
-    temp = blocks.copy()
-
-    for i in range(p):
-
-        best = -1
-
-        for j in range(b):
-
-            if temp[j] >= processes[i]:
-
-                if best == -1 or temp[j] < temp[best]:
-
-                    best = j
-
-        if best != -1:
-
-            allocation[i] = best
-            temp[best] -= processes[i]
-
-    return memory_output(
-        "Best Fit Result",
-        processes,
-        allocation
-    )
-
-
-# =====================================================
-# WORST FIT
-# =====================================================
-
-@app.route('/run_worstfit', methods=['POST'])
-def run_worstfit():
-
-    b = int(request.form['blocks'])
-    p = int(request.form['processes'])
-
-    blocks = []
-    processes = []
-
-    for i in range(b):
-
-        blocks.append(int(request.form[f'block{i}']))
-
-    for i in range(p):
-
-        processes.append(int(request.form[f'process{i}']))
-
-    allocation = [-1] * p
-
-    temp = blocks.copy()
-
-    for i in range(p):
-
-        worst = -1
-
-        for j in range(b):
-
-            if temp[j] >= processes[i]:
-
-                if worst == -1 or temp[j] > temp[worst]:
-
-                    worst = j
-
-        if worst != -1:
-
-            allocation[i] = worst
-            temp[worst] -= processes[i]
-
-    return memory_output(
-        "Worst Fit Result",
-        processes,
-        allocation
-    )
-
-
-# =====================================================
-# DEADLOCK DETECTION
-# =====================================================
-
-@app.route('/run_deadlock', methods=['POST'])
-def run_deadlock():
-
-    n = int(request.form['processes'])
-    r = int(request.form['resources'])
-
-    allocation = []
-    maximum = []
-
-    for i in range(n):
-
-        allocation.append(
-            list(
-                map(
-                    int,
-                    request.form[f'allocation{i}'].split()
-                )
-            )
-        )
-
-    for i in range(n):
-
-        maximum.append(
-            list(
-                map(
-                    int,
-                    request.form[f'maximum{i}'].split()
-                )
-            )
-        )
-
-    available = list(
+    requests = list(
         map(
             int,
-            request.form['available'].split()
+            request.form['requests'].split()
         )
     )
 
-    need = []
+    head = int(request.form['head'])
 
-    for i in range(n):
+    sequence = [head] + requests
 
-        row = []
+    total_seek = 0
 
-        for j in range(r):
+    for i in range(len(sequence)-1):
 
-            row.append(
-                maximum[i][j] - allocation[i][j]
-            )
+        total_seek += abs(
+            sequence[i+1] - sequence[i]
+        )
 
-        need.append(row)
+    return disk_output(
+        "FCFS Disk Scheduling Result",
+        sequence,
+        total_seek
+    )
 
-    finish = [False] * n
 
-    safe = []
+# =====================================================
+# DISK SSTF
+# =====================================================
 
-    work = available.copy()
+@app.route('/run_disk_sstf', methods=['POST'])
+def run_disk_sstf():
 
-    while True:
+    requests = list(
+        map(
+            int,
+            request.form['requests'].split()
+        )
+    )
 
-        found = False
+    head = int(request.form['head'])
 
-        for i in range(n):
+    sequence = [head]
 
-            if not finish[i]:
+    total_seek = 0
 
-                possible = True
+    while requests:
 
-                for j in range(r):
+        closest = min(
+            requests,
+            key=lambda x: abs(x - head)
+        )
 
-                    if need[i][j] > work[j]:
+        total_seek += abs(
+            closest - head
+        )
 
-                        possible = False
-                        break
+        head = closest
 
-                if possible:
+        sequence.append(head)
 
-                    for j in range(r):
+        requests.remove(closest)
 
-                        work[j] += allocation[i][j]
+    return disk_output(
+        "SSTF Disk Scheduling Result",
+        sequence,
+        total_seek
+    )
 
-                    safe.append(f"P{i}")
 
-                    finish[i] = True
+# =====================================================
+# DISK SCAN
+# =====================================================
 
-                    found = True
+@app.route('/run_disk_scan', methods=['POST'])
+def run_disk_scan():
 
-        if not found:
-            break
+    requests = list(
+        map(
+            int,
+            request.form['requests'].split()
+        )
+    )
 
-    deadlock = False
+    head = int(request.form['head'])
 
-    for i in range(n):
+    disk_size = 200
 
-        if not finish[i]:
+    left = []
+    right = []
 
-            deadlock = True
+    for req in requests:
 
-    rows = ""
+        if req < head:
+            left.append(req)
+        else:
+            right.append(req)
 
-    for i in range(n):
+    left.sort()
+    right.sort()
 
-        rows += f"""
+    sequence = [head]
 
-        <tr>
+    total_seek = 0
+    current = head
 
-            <td>P{i}</td>
+    for req in right:
 
-            <td>{allocation[i]}</td>
+        total_seek += abs(req - current)
+        current = req
+        sequence.append(req)
 
-            <td>{maximum[i]}</td>
+    total_seek += abs((disk_size - 1) - current)
 
-            <td>{need[i]}</td>
+    current = disk_size - 1
 
-        </tr>
-        """
+    sequence.append(current)
 
-    if deadlock:
+    left.reverse()
 
-        status = """
+    for req in left:
 
-        <h1 style='color:red;'>
+        total_seek += abs(req - current)
+        current = req
+        sequence.append(req)
 
-        Deadlock Detected ❌
+    return disk_output(
+        "SCAN Disk Scheduling Result",
+        sequence,
+        total_seek
+    )
 
-        </h1>
-        """
 
-    else:
+# =====================================================
+# DISK C-SCAN
+# =====================================================
 
-        sequence = " ➜ ".join(safe)
+@app.route('/run_disk_cscan', methods=['POST'])
+def run_disk_cscan():
 
-        status = f"""
+    requests = list(
+        map(
+            int,
+            request.form['requests'].split()
+        )
+    )
 
-        <h1 style='color:lime;'>
+    head = int(request.form['head'])
 
-        Safe State ✅
+    disk_size = 200
 
-        </h1>
+    left = []
+    right = []
 
-        <h2>
+    for req in requests:
 
-        Safe Sequence:
-        {sequence}
+        if req < head:
+            left.append(req)
+        else:
+            right.append(req)
 
-        </h2>
-        """
+    left.sort()
+    right.sort()
 
-    return f"""
+    sequence = [head]
 
-    <html>
+    total_seek = 0
+    current = head
 
-    <head>
+    for req in right:
 
-    <title>Deadlock Detection</title>
+        total_seek += abs(req - current)
+        current = req
+        sequence.append(req)
 
-    <style>
+    total_seek += abs((disk_size - 1) - current)
 
-    body{{
-        background:#0f0f0f;
-        color:white;
-        font-family:Arial;
-        text-align:center;
-        padding:20px;
-    }}
+    current = disk_size - 1
 
-    table{{
-        width:95%;
-        margin:auto;
-        margin-top:40px;
-        border-collapse:collapse;
-    }}
+    sequence.append(current)
 
-    th,td{{
-        border:1px solid #444;
-        padding:15px;
-    }}
+    total_seek += current
 
-    th{{
-        background:#333;
-    }}
+    current = 0
 
-    button{{
-        margin-top:40px;
-        padding:15px 30px;
-        border:none;
-        border-radius:10px;
-        cursor:pointer;
-    }}
+    sequence.append(current)
 
-    </style>
+    for req in left:
 
-    </head>
+        total_seek += abs(req - current)
+        current = req
+        sequence.append(req)
 
-    <body>
+    return disk_output(
+        "C-SCAN Disk Scheduling Result",
+        sequence,
+        total_seek
+    )
 
-    <h1>Deadlock Detection Result</h1>
 
-    {status}
+# =====================================================
+# DISK LOOK
+# =====================================================
 
-    <table>
+@app.route('/run_disk_look', methods=['POST'])
+def run_disk_look():
 
-        <tr>
+    requests = list(
+        map(
+            int,
+            request.form['requests'].split()
+        )
+    )
 
-            <th>Process</th>
+    head = int(request.form['head'])
 
-            <th>Allocation</th>
+    left = []
+    right = []
 
-            <th>Maximum</th>
+    for req in requests:
 
-            <th>Need</th>
+        if req < head:
+            left.append(req)
+        else:
+            right.append(req)
 
-        </tr>
+    left.sort()
+    right.sort()
 
-        {rows}
+    sequence = [head]
 
-    </table>
+    total_seek = 0
+    current = head
 
-    <button onclick="history.back()">
+    for req in right:
 
-    Back
+        total_seek += abs(req - current)
+        current = req
+        sequence.append(req)
 
-    </button>
+    left.reverse()
 
-    </body>
+    for req in left:
 
-    </html>
-    """
+        total_seek += abs(req - current)
+        current = req
+        sequence.append(req)
+
+    return disk_output(
+        "LOOK Disk Scheduling Result",
+        sequence,
+        total_seek
+    )
+
+
+# =====================================================
+# DISK C-LOOK
+# =====================================================
+
+@app.route('/run_disk_clook', methods=['POST'])
+def run_disk_clook():
+
+    requests = list(
+        map(
+            int,
+            request.form['requests'].split()
+        )
+    )
+
+    head = int(request.form['head'])
+
+    left = []
+    right = []
+
+    for req in requests:
+
+        if req < head:
+            left.append(req)
+        else:
+            right.append(req)
+
+    left.sort()
+    right.sort()
+
+    sequence = [head]
+
+    total_seek = 0
+    current = head
+
+    for req in right:
+
+        total_seek += abs(req - current)
+        current = req
+        sequence.append(req)
+
+    if left:
+
+        total_seek += abs(current - left[0])
+
+        current = left[0]
+
+        sequence.append(current)
+
+    for req in left[1:]:
+
+        total_seek += abs(req - current)
+
+        current = req
+
+        sequence.append(req)
+
+    return disk_output(
+        "C-LOOK Disk Scheduling Result",
+        sequence,
+        total_seek
+    )
 
 
 # =====================================================
