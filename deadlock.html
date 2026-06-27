@@ -122,8 +122,6 @@ function generateInputs(){
 
     let n = parseInt(document.getElementById("n").value);
 
-    let r = parseInt(document.getElementById("r").value);
-
     let html = "";
 
     html += `
@@ -150,7 +148,7 @@ function generateInputs(){
 
         <td>
 
-        <input type="text" id="alloc${i}" placeholder="Example: 0 1 0">
+        <input type="text" id="alloc${i}" placeholder="0 1 0">
 
         </td>
 
@@ -184,7 +182,7 @@ function generateInputs(){
 
         <td>
 
-        <input type="text" id="max${i}" placeholder="Example: 7 5 3">
+        <input type="text" id="max${i}" placeholder="7 5 3">
 
         </td>
 
@@ -198,7 +196,7 @@ function generateInputs(){
 
     <h2>Available Resources</h2>
 
-    <input type="text" id="available" placeholder="Example: 3 3 2">
+    <input type="text" id="available" placeholder="3 3 2">
 
     <br>
 
@@ -215,8 +213,6 @@ function generateInputs(){
 function runDeadlock(){
 
     let n = parseInt(document.getElementById("n").value);
-
-    let r = parseInt(document.getElementById("r").value);
 
     let allocation = [];
     let maximum = [];
@@ -250,7 +246,7 @@ function runDeadlock(){
 
         let row = [];
 
-        for(let j=0;j<r;j++){
+        for(let j=0;j<available.length;j++){
 
             row.push(
                 maximum[i][j] - allocation[i][j]
@@ -276,18 +272,19 @@ function runDeadlock(){
 
                 let possible = true;
 
-                for(let j=0;j<r;j++){
+                for(let j=0;j<available.length;j++){
 
                     if(need[i][j] > work[j]){
 
                         possible = false;
+
                         break;
                     }
                 }
 
                 if(possible){
 
-                    for(let j=0;j<r;j++){
+                    for(let j=0;j<available.length;j++){
 
                         work[j] += allocation[i][j];
                     }
