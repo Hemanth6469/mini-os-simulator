@@ -3,103 +3,67 @@
 
 <head>
 
-<title>Round Robin Scheduling</title>
+    <title>Round Robin Scheduling</title>
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<style>
+    <style>
 
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
+        body{
+            background:#0f0f0f;
+            color:white;
+            font-family:Arial;
+            text-align:center;
+            padding:20px;
+        }
 
-body{
-    background:#0f0f0f;
-    color:white;
-    font-family:Arial;
-    text-align:center;
-    padding:20px;
-}
+        h1{
+            font-size:55px;
+        }
 
-h1{
-    margin-top:20px;
-    font-size:55px;
-}
+        .container{
+            background:#1c1c1c;
+            width:85%;
+            margin:auto;
+            padding:40px;
+            border-radius:20px;
+            margin-top:30px;
+        }
 
-.card{
-    background:#1c1c1c;
-    width:95%;
-    max-width:900px;
-    margin:auto;
-    margin-top:40px;
-    padding:40px 25px;
-    border-radius:20px;
-    box-shadow:0px 0px 20px rgba(255,255,255,0.08);
-}
+        input{
+            padding:15px;
+            width:80%;
+            border:none;
+            border-radius:10px;
+            margin-top:10px;
+            font-size:18px;
+        }
 
-input{
-    width:90%;
-    padding:15px;
-    margin-top:15px;
-    font-size:18px;
-    border:none;
-    border-radius:10px;
-    outline:none;
-}
+        button{
+            margin-top:20px;
+            padding:15px 30px;
+            border:none;
+            border-radius:10px;
+            font-size:18px;
+            cursor:pointer;
+        }
 
-button{
-    padding:15px 30px;
-    margin-top:25px;
-    border:none;
-    border-radius:10px;
-    font-size:18px;
-    cursor:pointer;
-    transition:0.3s;
-}
+        table{
+            width:100%;
+            margin-top:30px;
+            border-collapse:collapse;
+        }
 
-button:hover{
-    transform:scale(1.05);
-}
+        th,td{
+            border:1px solid #444;
+            padding:15px;
+        }
 
-table{
-    width:100%;
-    margin-top:35px;
-    border-collapse:collapse;
-}
+        th{
+            background:#333;
+        }
 
-th,td{
-    border:1px solid #444;
-    padding:15px;
-}
-
-th{
-    background:#333;
-}
-
-@media(max-width:768px){
-
-    h1{
-        font-size:35px;
-    }
-
-    input{
-        width:100%;
-        font-size:16px;
-    }
-
-    button{
-        width:100%;
-        font-size:16px;
-    }
-
-    table{
-        font-size:14px;
-    }
-}
-
-</style>
+    </style>
 
 </head>
 
@@ -107,37 +71,35 @@ th{
 
 <h1>Round Robin Scheduling</h1>
 
-<div class="card">
+<div class="container">
 
-<input
-type="number"
-id="num"
-placeholder="Enter Number of Processes">
+    <h2>Enter Number of Processes</h2>
 
-<input
-type="number"
-id="tq"
-placeholder="Enter Time Quantum">
+    <input type="number" id="n" value="3">
 
-<button onclick="generateInputs()">
+    <br>
 
-Generate Inputs
+    <h2>Time Quantum</h2>
 
-</button>
+    <input type="number" id="tq" value="2">
 
-<form
-action="/run_rr"
-method="POST">
+    <br>
 
-<div id="inputs"></div>
+    <button onclick="generateInputs()">
 
-</form>
+        Generate Inputs
 
-<button onclick="history.back()">
+    </button>
 
-Back
+    <div id="inputs"></div>
 
-</button>
+    <br>
+
+    <button onclick="window.location.href='cpu.html'">
+
+        Back
+
+    </button>
 
 </div>
 
@@ -145,29 +107,19 @@ Back
 
 function generateInputs(){
 
-    let n = document.getElementById("num").value;
-
-    let tq = document.getElementById("tq").value;
+    let n = document.getElementById("n").value;
 
     let html = `
 
-    <input
-    type="hidden"
-    name="n"
-    value="${n}">
-
-    <input
-    type="hidden"
-    name="tq"
-    value="${tq}">
-
     <table>
 
-    <tr>
-        <th>Process</th>
-        <th>Arrival Time</th>
-        <th>Burst Time</th>
-    </tr>
+        <tr>
+
+            <th>Process</th>
+            <th>Arrival Time</th>
+            <th>Burst Time</th>
+
+        </tr>
     `;
 
     for(let i=0;i<n;i++){
@@ -179,17 +131,15 @@ function generateInputs(){
             <td>P${i+1}</td>
 
             <td>
-                <input
-                type="number"
-                name="at${i}"
-                required>
+
+                <input type="number" id="at${i}" value="${i}">
+
             </td>
 
             <td>
-                <input
-                type="number"
-                name="bt${i}"
-                required>
+
+                <input type="number" id="bt${i}" value="${i+3}">
+
             </td>
 
         </tr>
@@ -200,9 +150,9 @@ function generateInputs(){
 
     </table>
 
-    <button type="submit">
+    <button onclick="runRR()">
 
-    Run Round Robin
+        Run Round Robin
 
     </button>
     `;
@@ -210,7 +160,78 @@ function generateInputs(){
     document.getElementById("inputs").innerHTML = html;
 }
 
+function runRR(){
+
+    let n = parseInt(document.getElementById("n").value);
+
+    let tq = parseInt(document.getElementById("tq").value);
+
+    let at = [];
+    let bt = [];
+
+    for(let i=0;i<n;i++){
+
+        at.push(parseInt(document.getElementById(`at${i}`).value));
+
+        bt.push(parseInt(document.getElementById(`bt${i}`).value));
+    }
+
+    let rem = [...bt];
+
+    let wt = Array(n).fill(0);
+
+    let tat = Array(n).fill(0);
+
+    let t = 0;
+
+    while(true){
+
+        let done = true;
+
+        for(let i=0;i<n;i++){
+
+            if(rem[i] > 0){
+
+                done = false;
+
+                if(rem[i] > tq){
+
+                    t += tq;
+
+                    rem[i] -= tq;
+
+                }
+
+                else{
+
+                    t += rem[i];
+
+                    wt[i] = t - bt[i];
+
+                    rem[i] = 0;
+                }
+            }
+        }
+
+        if(done)
+            break;
+    }
+
+    for(let i=0;i<n;i++){
+
+        tat[i] = wt[i] + bt[i];
+    }
+
+    localStorage.setItem("rr_at", JSON.stringify(at));
+    localStorage.setItem("rr_bt", JSON.stringify(bt));
+    localStorage.setItem("rr_wt", JSON.stringify(wt));
+    localStorage.setItem("rr_tat", JSON.stringify(tat));
+
+    window.location.href = "roundrobin_result.html";
+}
+
 </script>
 
 </body>
+
 </html>

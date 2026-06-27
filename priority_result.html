@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Priority Result</title>
+
+<style>
+
+body{
+    background:#0f0f0f;
+    color:white;
+    font-family:Arial;
+    text-align:center;
+    padding:20px;
+}
+
+table{
+    width:100%;
+    margin-top:40px;
+    border-collapse:collapse;
+}
+
+th,td{
+    border:1px solid #444;
+    padding:15px;
+}
+
+th{
+    background:#333;
+}
+
+button{
+    margin-top:40px;
+    padding:15px 30px;
+    border:none;
+    border-radius:10px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>Priority Result</h1>
+
+<div id="result"></div>
+
+<script>
+
+let processes = JSON.parse(localStorage.getItem("priority_processes"));
+
+let wt = JSON.parse(localStorage.getItem("priority_wt"));
+
+let tat = JSON.parse(localStorage.getItem("priority_tat"));
+
+let n = processes.length;
+
+let avgWT = 0;
+let avgTAT = 0;
+
+let table = `
+
+<table>
+
+<tr>
+
+<th>Process</th>
+<th>AT</th>
+<th>BT</th>
+<th>Priority</th>
+<th>WT</th>
+<th>TAT</th>
+
+</tr>
+`;
+
+for(let i=0;i<n;i++){
+
+    avgWT += wt[i];
+    avgTAT += tat[i];
+
+    table += `
+
+    <tr>
+
+    <td>P${processes[i].pid}</td>
+    <td>${processes[i].at}</td>
+    <td>${processes[i].bt}</td>
+    <td>${processes[i].pr}</td>
+    <td>${wt[i]}</td>
+    <td>${tat[i]}</td>
+
+    </tr>
+    `;
+}
+
+table += `</table>`;
+
+avgWT /= n;
+avgTAT /= n;
+
+document.getElementById("result").innerHTML = `
+
+<h2>Average WT = ${avgWT.toFixed(2)}</h2>
+
+<h2>Average TAT = ${avgTAT.toFixed(2)}</h2>
+
+${table}
+
+<button onclick="window.location.href='priority.html'">
+
+Back
+
+</button>
+`;
+
+</script>
+
+</body>
+
+</html>
