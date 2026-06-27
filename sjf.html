@@ -18,15 +18,15 @@
         }
 
         h1{
-            font-size:60px;
+            font-size:55px;
         }
 
         .container{
-            background:#1f1f1f;
+            background:#1c1c1c;
+            width:85%;
+            margin:auto;
             padding:40px;
             border-radius:20px;
-            width:80%;
-            margin:auto;
             margin-top:30px;
         }
 
@@ -35,12 +35,12 @@
             width:80%;
             border:none;
             border-radius:10px;
-            margin-top:15px;
+            margin-top:10px;
             font-size:18px;
         }
 
         button{
-            margin-top:25px;
+            margin-top:20px;
             padding:15px 30px;
             border:none;
             border-radius:10px;
@@ -50,7 +50,7 @@
 
         table{
             width:100%;
-            margin-top:40px;
+            margin-top:30px;
             border-collapse:collapse;
         }
 
@@ -61,36 +61,6 @@
 
         th{
             background:#333;
-        }
-
-        .gantt{
-            display:flex;
-            justify-content:center;
-            gap:20px;
-            flex-wrap:wrap;
-            margin-top:40px;
-        }
-
-        .box{
-            background:#222;
-            padding:25px;
-            border-radius:15px;
-            min-width:120px;
-        }
-
-        .cards{
-            display:flex;
-            justify-content:center;
-            gap:20px;
-            flex-wrap:wrap;
-            margin-top:40px;
-        }
-
-        .card{
-            background:#222;
-            padding:25px;
-            border-radius:15px;
-            min-width:250px;
         }
 
         @media(max-width:768px){
@@ -107,7 +77,6 @@
             input{
                 width:90%;
             }
-
         }
 
     </style>
@@ -116,27 +85,33 @@
 
 <body>
 
-    <h1>SJF Scheduling</h1>
+<h1>SJF Scheduling</h1>
 
-    <div class="container">
+<div class="container">
 
-        <h2>Enter Number of Processes</h2>
+    <h2>Enter Number of Processes</h2>
 
-        <input type="number" id="n" value="3">
+    <input type="number" id="n" value="3">
 
-        <br>
+    <br>
 
-        <button onclick="generateInputs()">
+    <button onclick="generateInputs()">
 
-            Generate Inputs
+        Generate Inputs
 
-        </button>
+    </button>
 
-        <div id="inputs"></div>
+    <div id="inputs"></div>
 
-    </div>
+    <br>
 
-    <div id="output"></div>
+    <button onclick="window.location.href='cpu.html'">
+
+        Back
+
+    </button>
+
+</div>
 
 <script>
 
@@ -144,9 +119,7 @@ function generateInputs(){
 
     let n = document.getElementById("n").value;
 
-    let html = "";
-
-    html += `
+    let html = `
 
     <table>
 
@@ -192,14 +165,6 @@ function generateInputs(){
         Run SJF
 
     </button>
-
-    <br>
-
-    <button onclick="window.location.href='cpu.html'">
-
-        Back
-
-    </button>
     `;
 
     document.getElementById("inputs").innerHTML = html;
@@ -207,21 +172,15 @@ function generateInputs(){
 
 function runSJF(){
 
-    let n = parseInt(
-        document.getElementById("n").value
-    );
+    let n = parseInt(document.getElementById("n").value);
 
     let processes = [];
 
     for(let i=0;i<n;i++){
 
-        let at = parseInt(
-            document.getElementById(`at${i}`).value
-        );
+        let at = parseInt(document.getElementById(`at${i}`).value);
 
-        let bt = parseInt(
-            document.getElementById(`bt${i}`).value
-        );
+        let bt = parseInt(document.getElementById(`bt${i}`).value);
 
         processes.push({
             pid:i+1,
@@ -247,106 +206,11 @@ function runSJF(){
         tat[i] = wt[i] + processes[i].bt;
     }
 
-    let avgWT = 0;
-    let avgTAT = 0;
+    localStorage.setItem("sjf_processes", JSON.stringify(processes));
+    localStorage.setItem("sjf_wt", JSON.stringify(wt));
+    localStorage.setItem("sjf_tat", JSON.stringify(tat));
 
-    let table = `
-
-    <table>
-
-        <tr>
-
-            <th>Process</th>
-            <th>AT</th>
-            <th>BT</th>
-            <th>WT</th>
-            <th>TAT</th>
-
-        </tr>
-    `;
-
-    for(let i=0;i<n;i++){
-
-        avgWT += wt[i];
-        avgTAT += tat[i];
-
-        table += `
-
-        <tr>
-
-            <td>P${processes[i].pid}</td>
-
-            <td>${processes[i].at}</td>
-
-            <td>${processes[i].bt}</td>
-
-            <td>${wt[i]}</td>
-
-            <td>${tat[i]}</td>
-
-        </tr>
-        `;
-    }
-
-    table += `</table>`;
-
-    avgWT /= n;
-    avgTAT /= n;
-
-    let gantt = `<div class="gantt">`;
-
-    let current = 0;
-
-    for(let i=0;i<n;i++){
-
-        let end = current + processes[i].bt;
-
-        gantt += `
-
-        <div class="box">
-
-            <h3>P${processes[i].pid}</h3>
-
-            <p>${current} - ${end}</p>
-
-        </div>
-        `;
-
-        current = end;
-    }
-
-    gantt += `</div>`;
-
-    document.getElementById("output").innerHTML = `
-
-    <div class="cards">
-
-        <div class="card">
-
-            <h2>Average WT</h2>
-
-            <h1>${avgWT.toFixed(2)}</h1>
-
-        </div>
-
-        <div class="card">
-
-            <h2>Average TAT</h2>
-
-            <h1>${avgTAT.toFixed(2)}</h1>
-
-        </div>
-
-    </div>
-
-    <h1>Result Table</h1>
-
-    ${table}
-
-    <h1>Gantt Chart</h1>
-
-    ${gantt}
-    `;
+    window.location.href = "sjf_result.html";
 }
 
 </script>
