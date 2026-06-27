@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Priority Scheduling</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+
+body{
+    background:#0f0f0f;
+    color:white;
+    font-family:Arial;
+    text-align:center;
+    padding:20px;
+}
+
+.card{
+    background:#1c1c1c;
+    width:95%;
+    max-width:900px;
+    margin:auto;
+    padding:30px;
+    border-radius:20px;
+}
+
+input{
+    padding:12px;
+    margin:10px;
+    width:90%;
+    border:none;
+    border-radius:10px;
+}
+
+button{
+    padding:15px 25px;
+    margin-top:20px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+table{
+    width:100%;
+    margin-top:30px;
+    border-collapse:collapse;
+}
+
+th,td{
+    border:1px solid #444;
+    padding:15px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>Priority Scheduling</h1>
+
+<div class="card">
+
+<input
+type="number"
+id="num"
+placeholder="Enter Number of Processes">
+
+<button onclick="generateInputs()">
+
+Generate Inputs
+
+</button>
+
+<form
+action="/run_priority"
+method="POST">
+
+<div id="inputs"></div>
+
+</form>
+
+<button onclick="history.back()">
+
+Back
+
+</button>
+
+</div>
+
+<script>
+
+function generateInputs(){
+
+    let n = document.getElementById("num").value;
+
+    let html = `
+    <input type="hidden" name="n" value="${n}">
+
+    <table>
+
+    <tr>
+        <th>Process</th>
+        <th>Arrival</th>
+        <th>Burst</th>
+        <th>Priority</th>
+    </tr>
+    `;
+
+    for(let i=0;i<n;i++){
+
+        html += `
+        <tr>
+
+            <td>P${i+1}</td>
+
+            <td>
+                <input type="number" name="at${i}" required>
+            </td>
+
+            <td>
+                <input type="number" name="bt${i}" required>
+            </td>
+
+            <td>
+                <input type="number" name="pr${i}" required>
+            </td>
+
+        </tr>
+        `;
+    }
+
+    html += `
+    </table>
+
+    <button type="submit">
+
+    Run Priority
+
+    </button>
+    `;
+
+    document.getElementById("inputs").innerHTML = html;
+}
+
+</script>
+
+</body>
+</html>
