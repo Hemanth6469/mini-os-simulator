@@ -5,17 +5,109 @@
 
     <title>CPU Scheduling</title>
 
-    <link rel="stylesheet" href="css/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+
+        body{
+            background:#0f0f0f;
+            color:white;
+            font-family:Arial;
+            text-align:center;
+            margin:0;
+            padding:0;
+        }
+
+        h1{
+            margin-top:30px;
+            font-size:60px;
+        }
+
+        .container{
+            width:90%;
+            margin:auto;
+            margin-top:50px;
+
+            display:grid;
+            grid-template-columns:repeat(2,1fr);
+
+            gap:40px;
+        }
+
+        .card{
+            background:#1c1c1c;
+            padding:50px;
+            border-radius:25px;
+
+            box-shadow:0px 0px 20px rgba(255,255,255,0.08);
+
+            transition:0.4s;
+        }
+
+        .card:hover{
+            transform:translateY(-10px) scale(1.03);
+
+            box-shadow:0px 0px 35px rgba(255,255,255,0.2);
+        }
+
+        h2{
+            font-size:35px;
+            margin-bottom:30px;
+        }
+
+        button{
+            padding:18px 35px;
+            font-size:22px;
+            border:none;
+            border-radius:12px;
+            cursor:pointer;
+            transition:0.3s;
+        }
+
+        button:hover{
+            transform:scale(1.08);
+
+            box-shadow:0px 0px 20px rgba(255,255,255,0.2);
+        }
+
+        .back{
+            margin-top:50px;
+            margin-bottom:50px;
+        }
+
+        @media(max-width:768px){
+
+            h1{
+                font-size:38px;
+            }
+
+            .container{
+                grid-template-columns:1fr;
+            }
+
+            .card{
+                padding:35px;
+            }
+
+            h2{
+                font-size:28px;
+            }
+
+            button{
+                font-size:18px;
+                padding:15px 28px;
+            }
+        }
+
+    </style>
 
 </head>
 
 <body>
 
-<div class="container">
-
     <h1>CPU Scheduling Algorithms</h1>
 
-    <div class="cards">
+    <div class="container">
 
         <!-- FCFS -->
 
@@ -23,13 +115,11 @@
 
             <h2>FCFS Scheduling</h2>
 
-            <a href="fcfs.html">
+            <button onclick="window.location.href='fcfs.html'">
 
-                <button>
-                    Run FCFS
-                </button>
+                Open
 
-            </a>
+            </button>
 
         </div>
 
@@ -39,57 +129,54 @@
 
             <h2>SJF Scheduling</h2>
 
-            <a href="sjf.html">
+            <button onclick="window.location.href='sjf.html'">
 
-                <button>
-                    Run SJF
-                </button>
+                Open
 
-            </a>
+            </button>
 
         </div>
 
-        <!-- Round Robin -->
+        <!-- ROUND ROBIN -->
 
         <div class="card">
 
             <h2>Round Robin</h2>
 
-            <a href="roundrobin.html">
+            <button onclick="window.location.href='roundrobin.html'">
 
-                <button>
-                    Run Round Robin
-                </button>
+                Open
 
-            </a>
+            </button>
 
         </div>
 
-        <!-- Priority -->
+        <!-- PRIORITY -->
 
         <div class="card">
 
             <h2>Priority Scheduling</h2>
 
-            <a href="priority.html">
+            <button onclick="window.location.href='priority.html'">
 
-                <button>
-                    Run Priority
-                </button>
+                Open
 
-            </a>
+            </button>
 
         </div>
 
     </div>
 
-    <br><br>
+    <div class="back">
 
-    <button onclick="window.location.href='index.html'">
-        Back
-    </button>
+        <button onclick="window.location.href='index.html'">
 
-</div>
+            Back
+
+        </button>
+
+    </div>
 
 </body>
+
 </html>
