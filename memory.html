@@ -3,120 +3,76 @@
 
 <head>
 
-    <title>Memory Management</title>
+<title>Memory Management</title>
 
-    <style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    body{
+<style>
 
-        background:#0f0f0f;
+body{
+    background:#0f0f0f;
+    color:white;
+    font-family:Arial;
+    text-align:center;
+    padding:20px;
+}
 
-        color:white;
+h1{
+    font-size:55px;
+}
 
-        font-family:Arial;
+.container{
+    width:90%;
+    margin:auto;
 
-        text-align:center;
-    }
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+
+    gap:40px;
+
+    margin-top:50px;
+}
+
+.card{
+    background:#1c1c1c;
+    padding:50px;
+    border-radius:25px;
+
+    transition:0.4s;
+
+    box-shadow:0px 0px 20px rgba(255,255,255,0.08);
+}
+
+.card:hover{
+    transform:translateY(-10px) scale(1.03);
+
+    box-shadow:0px 0px 35px rgba(255,255,255,0.2);
+}
+
+button{
+    padding:15px 30px;
+    border:none;
+    border-radius:10px;
+    font-size:20px;
+    cursor:pointer;
+}
+
+.back{
+    margin-top:50px;
+}
+
+@media(max-width:768px){
 
     h1{
-
-        margin-top:40px;
-
-        font-size:55px;
+        font-size:35px;
     }
 
     .container{
-
-        margin-top:60px;
-
-        display:flex;
-
-        justify-content:center;
-
-        gap:40px;
-
-        flex-wrap:wrap;
+        grid-template-columns:1fr;
     }
+}
 
-    .card{
-
-        width:300px;
-
-        padding:40px;
-
-        background:#1c1c1c;
-
-        border-radius:20px;
-
-        transition:0.4s;
-
-        cursor:pointer;
-
-        box-shadow:0px 0px 20px rgba(255,255,255,0.08);
-
-        animation:fadeUp 1s ease;
-    }
-
-    .card:hover{
-
-        transform:translateY(-10px) scale(1.05);
-
-        box-shadow:0px 0px 30px rgba(255,255,255,0.2);
-    }
-
-    a{
-
-        color:white;
-
-        text-decoration:none;
-
-        font-size:30px;
-
-        font-weight:bold;
-    }
-
-    button{
-
-        margin-top:70px;
-
-        padding:18px 35px;
-
-        font-size:22px;
-
-        border:none;
-
-        border-radius:12px;
-
-        cursor:pointer;
-
-        transition:0.4s;
-    }
-
-    button:hover{
-
-        transform:scale(1.08);
-
-        box-shadow:0px 0px 25px rgba(255,255,255,0.25);
-    }
-
-    @keyframes fadeUp{
-
-        from{
-
-            opacity:0;
-
-            transform:translateY(40px);
-        }
-
-        to{
-
-            opacity:1;
-
-            transform:translateY(0);
-        }
-    }
-
-    </style>
+</style>
 
 </head>
 
@@ -128,41 +84,52 @@
 
     <div class="card">
 
-        <a href="firstfit.html">
+        <h2>First Fit</h2>
 
-            First Fit
+        <button onclick="window.location.href='firstfit.html'">
 
-        </a>
+            Open
 
-    </div>
-
-    <div class="card">
-
-        <a href="bestfit.html">
-
-            Best Fit
-
-        </a>
+        </button>
 
     </div>
 
     <div class="card">
 
-        <a href="worstfit.html">
+        <h2>Best Fit</h2>
 
-            Worst Fit
+        <button onclick="window.location.href='bestfit.html'">
 
-        </a>
+            Open
+
+        </button>
+
+    </div>
+
+    <div class="card">
+
+        <h2>Worst Fit</h2>
+
+        <button onclick="window.location.href='worstfit.html'">
+
+            Open
+
+        </button>
 
     </div>
 
 </div>
 
+<div class="back">
+
 <button onclick="window.location.href='index.html'">
 
-    Back
+Back
 
 </button>
 
+</div>
+
 </body>
+
 </html>

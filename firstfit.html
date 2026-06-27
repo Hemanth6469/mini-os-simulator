@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>First Fit</title>
+
+<style>
+
+body{
+    background:#0f0f0f;
+    color:white;
+    font-family:Arial;
+    text-align:center;
+    padding:20px;
+}
+
+.container{
+    background:#1c1c1c;
+    width:85%;
+    margin:auto;
+    padding:40px;
+    border-radius:20px;
+}
+
+input{
+    padding:15px;
+    width:80%;
+    border:none;
+    border-radius:10px;
+    margin-top:10px;
+}
+
+button{
+    margin-top:20px;
+    padding:15px 30px;
+    border:none;
+    border-radius:10px;
+    font-size:18px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>First Fit</h1>
+
+<div class="container">
+
+<h2>Memory Blocks</h2>
+
+<input type="text" id="blocks" value="100 500 200 300 600">
+
+<h2>Processes</h2>
+
+<input type="text" id="processes" value="212 417 112 426">
+
+<br>
+
+<button onclick="runFirstFit()">
+
+Run First Fit
+
+</button>
+
+<br>
+
+<button onclick="window.location.href='memory.html'">
+
+Back
+
+</button>
+
+</div>
+
+<script>
+
+function runFirstFit(){
+
+    let blocks = document.getElementById("blocks").value.split(" ").map(Number);
+
+    let processes = document.getElementById("processes").value.split(" ").map(Number);
+
+    let allocation = Array(processes.length).fill(-1);
+
+    let temp = [...blocks];
+
+    for(let i=0;i<processes.length;i++){
+
+        for(let j=0;j<temp.length;j++){
+
+            if(temp[j] >= processes[i]){
+
+                allocation[i] = j+1;
+
+                temp[j] -= processes[i];
+
+                break;
+            }
+        }
+    }
+
+    localStorage.setItem("mem_processes", JSON.stringify(processes));
+    localStorage.setItem("mem_alloc", JSON.stringify(allocation));
+    localStorage.setItem("mem_title", "First Fit");
+
+    window.location.href = "memory_result.html";
+}
+
+</script>
+
+</body>
+
+</html>

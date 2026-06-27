@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Memory Result</title>
+
+<style>
+
+body{
+    background:#0f0f0f;
+    color:white;
+    font-family:Arial;
+    text-align:center;
+    padding:20px;
+}
+
+table{
+    width:100%;
+    margin-top:40px;
+    border-collapse:collapse;
+}
+
+th,td{
+    border:1px solid #444;
+    padding:15px;
+}
+
+th{
+    background:#333;
+}
+
+button{
+    margin-top:40px;
+    padding:15px 30px;
+    border:none;
+    border-radius:10px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1 id="title"></h1>
+
+<div id="result"></div>
+
+<script>
+
+let processes = JSON.parse(localStorage.getItem("mem_processes"));
+
+let allocation = JSON.parse(localStorage.getItem("mem_alloc"));
+
+let title = localStorage.getItem("mem_title");
+
+document.getElementById("title").innerHTML = title + " Result";
+
+let table = `
+
+<table>
+
+<tr>
+
+<th>Process</th>
+<th>Size</th>
+<th>Allocation</th>
+
+</tr>
+`;
+
+for(let i=0;i<processes.length;i++){
+
+    table += `
+
+    <tr>
+
+    <td>P${i+1}</td>
+    <td>${processes[i]}</td>
+    <td>${allocation[i] == -1 ? "Not Allocated" : "Block " + allocation[i]}</td>
+
+    </tr>
+    `;
+}
+
+table += `</table>`;
+
+document.getElementById("result").innerHTML = `
+
+${table}
+
+<button onclick="window.location.href='memory.html'">
+
+Back
+
+</button>
+`;
+
+</script>
+
+</body>
+
+</html>
