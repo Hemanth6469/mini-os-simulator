@@ -5,6 +5,8 @@
 
 <title>Disk Scheduling</title>
 
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <style>
 
 body{
@@ -12,37 +14,29 @@ body{
     color:white;
     font-family:Arial;
     text-align:center;
+    padding:20px;
 }
 
 h1{
-    margin-top:30px;
     font-size:55px;
 }
 
 .container{
-
-    margin-top:50px;
+    width:90%;
+    margin:auto;
 
     display:grid;
-
-    grid-template-columns:repeat(3,1fr);
+    grid-template-columns:repeat(2,1fr);
 
     gap:40px;
 
-    width:90%;
-
-    margin-left:auto;
-
-    margin-right:auto;
+    margin-top:50px;
 }
 
 .card{
-
     background:#1c1c1c;
-
-    padding:40px;
-
-    border-radius:20px;
+    padding:50px;
+    border-radius:25px;
 
     transition:0.4s;
 
@@ -50,36 +44,32 @@ h1{
 }
 
 .card:hover{
+    transform:translateY(-10px) scale(1.03);
 
-    transform:translateY(-10px) scale(1.05);
-
-    box-shadow:0px 0px 30px rgba(255,255,255,0.2);
-}
-
-a{
-
-    color:white;
-
-    text-decoration:none;
-
-    font-size:28px;
-
-    font-weight:bold;
+    box-shadow:0px 0px 35px rgba(255,255,255,0.2);
 }
 
 button{
-
-    margin-top:60px;
-
-    padding:18px 35px;
-
-    font-size:22px;
-
+    padding:15px 30px;
     border:none;
-
-    border-radius:12px;
-
+    border-radius:10px;
+    font-size:20px;
     cursor:pointer;
+}
+
+.back{
+    margin-top:50px;
+}
+
+@media(max-width:768px){
+
+    h1{
+        font-size:35px;
+    }
+
+    .container{
+        grid-template-columns:1fr;
+    }
 }
 
 </style>
@@ -94,71 +84,64 @@ button{
 
     <div class="card">
 
-        <a href="disk_fcfs.html">
+        <h2>FCFS Disk</h2>
 
-            FCFS
+        <button onclick="window.location.href='disk_fcfs.html'">
 
-        </a>
+            Open
 
-    </div>
-
-    <div class="card">
-
-        <a href="disk_sstf.html">
-
-            SSTF
-
-        </a>
+        </button>
 
     </div>
 
     <div class="card">
 
-        <a href="disk_scan.html">
+        <h2>SSTF Disk</h2>
 
-            SCAN
+        <button onclick="window.location.href='disk_sstf.html'">
 
-        </a>
+            Open
 
-    </div>
-
-    <div class="card">
-
-        <a href="disk_cscan.html">
-
-            C-SCAN
-
-        </a>
+        </button>
 
     </div>
 
     <div class="card">
 
-        <a href="disk_look.html">
+        <h2>SCAN Disk</h2>
 
-            LOOK
+        <button onclick="window.location.href='disk_scan.html'">
 
-        </a>
+            Open
+
+        </button>
 
     </div>
 
     <div class="card">
 
-        <a href="disk_clook.html">
+        <h2>C-SCAN Disk</h2>
 
-            C-LOOK
+        <button onclick="window.location.href='disk_cscan.html'">
 
-        </a>
+            Open
+
+        </button>
 
     </div>
 
 </div>
 
+<div class="back">
+
 <button onclick="window.location.href='index.html'">
 
-    Back
+Back
 
 </button>
 
+</div>
+
 </body>
+
 </html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Disk Result</title>
+
+<style>
+
+body{
+    background:#0f0f0f;
+    color:white;
+    font-family:Arial;
+    text-align:center;
+    padding:20px;
+}
+
+.box{
+    background:#1c1c1c;
+    padding:40px;
+    border-radius:20px;
+    width:85%;
+    margin:auto;
+}
+
+.sequence{
+    display:flex;
+    justify-content:center;
+    gap:20px;
+    flex-wrap:wrap;
+    margin-top:40px;
+}
+
+.item{
+    background:#222;
+    padding:20px;
+    border-radius:15px;
+    min-width:80px;
+}
+
+button{
+    margin-top:40px;
+    padding:15px 30px;
+    border:none;
+    border-radius:10px;
+    font-size:18px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1 id="title"></h1>
+
+<div class="box">
+
+<h2 id="total"></h2>
+
+<div class="sequence" id="sequence"></div>
+
+<button onclick="window.location.href='disk.html'">
+
+Back
+
+</button>
+
+</div>
+
+<script>
+
+let title = localStorage.getItem(
+    "disk_title"
+);
+
+let sequence = JSON.parse(
+    localStorage.getItem("disk_sequence")
+);
+
+let total = localStorage.getItem(
+    "disk_total"
+);
+
+document.getElementById("title")
+.innerHTML = title;
+
+document.getElementById("total")
+.innerHTML = "Total Head Movement = " + total;
+
+let html = "";
+
+for(let i=0;i<sequence.length;i++){
+
+    html += `
+
+    <div class="item">
+
+    ${sequence[i]}
+
+    </div>
+    `;
+}
+
+document.getElementById("sequence")
+.innerHTML = html;
+
+</script>
+
+</body>
+
+</html>

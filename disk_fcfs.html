@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Disk FCFS</title>
+
+<style>
+
+body{
+    background:#0f0f0f;
+    color:white;
+    font-family:Arial;
+    text-align:center;
+    padding:20px;
+}
+
+.container{
+    background:#1c1c1c;
+    width:85%;
+    margin:auto;
+    padding:40px;
+    border-radius:20px;
+}
+
+input{
+    padding:15px;
+    width:80%;
+    border:none;
+    border-radius:10px;
+    margin-top:10px;
+}
+
+button{
+    margin-top:20px;
+    padding:15px 30px;
+    border:none;
+    border-radius:10px;
+    font-size:18px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>FCFS Disk Scheduling</h1>
+
+<div class="container">
+
+<h2>Disk Requests</h2>
+
+<input type="text" id="requests" value="98 183 37 122 14 124 65 67">
+
+<h2>Initial Head Position</h2>
+
+<input type="number" id="head" value="53">
+
+<br>
+
+<button onclick="runFCFS()">
+
+Run FCFS
+
+</button>
+
+<br>
+
+<button onclick="window.location.href='disk.html'">
+
+Back
+
+</button>
+
+</div>
+
+<script>
+
+function runFCFS(){
+
+    let req = document
+    .getElementById("requests")
+    .value
+    .split(" ")
+    .map(Number);
+
+    let head = parseInt(
+        document.getElementById("head").value
+    );
+
+    let total = 0;
+
+    let sequence = [head];
+
+    for(let i=0;i<req.length;i++){
+
+        total += Math.abs(head - req[i]);
+
+        head = req[i];
+
+        sequence.push(head);
+    }
+
+    localStorage.setItem(
+        "disk_title",
+        "FCFS Disk Scheduling"
+    );
+
+    localStorage.setItem(
+        "disk_sequence",
+        JSON.stringify(sequence)
+    );
+
+    localStorage.setItem(
+        "disk_total",
+        total
+    );
+
+    window.location.href = "disk_result.html";
+}
+
+</script>
+
+</body>
+
+</html>
