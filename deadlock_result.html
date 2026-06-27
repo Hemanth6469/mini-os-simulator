@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Deadlock Result</title>
+
+<style>
+
+body{
+    background:#0f0f0f;
+    color:white;
+    font-family:Arial;
+    text-align:center;
+    padding:20px;
+}
+
+table{
+    width:100%;
+    margin-top:40px;
+    border-collapse:collapse;
+}
+
+th,td{
+    border:1px solid #444;
+    padding:15px;
+}
+
+th{
+    background:#333;
+}
+
+button{
+    margin-top:40px;
+    padding:15px 30px;
+    border:none;
+    border-radius:10px;
+    font-size:18px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>Deadlock Detection Result</h1>
+
+<div id="result"></div>
+
+<script>
+
+let allocation = JSON.parse(
+    localStorage.getItem("deadlock_allocation")
+);
+
+let maximum = JSON.parse(
+    localStorage.getItem("deadlock_maximum")
+);
+
+let need = JSON.parse(
+    localStorage.getItem("deadlock_need")
+);
+
+let safe = JSON.parse(
+    localStorage.getItem("deadlock_safe")
+);
+
+let status = localStorage.getItem(
+    "deadlock_status"
+);
+
+let table = `
+
+<table>
+
+<tr>
+
+<th>Process</th>
+<th>Allocation</th>
+<th>Maximum</th>
+<th>Need</th>
+
+</tr>
+`;
+
+for(let i=0;i<allocation.length;i++){
+
+    table += `
+
+    <tr>
+
+    <td>P${i}</td>
+
+    <td>${allocation[i].join(" ")}</td>
+
+    <td>${maximum[i].join(" ")}</td>
+
+    <td>${need[i].join(" ")}</td>
+
+    </tr>
+    `;
+}
+
+table += `</table>`;
+
+document.getElementById("result").innerHTML = `
+
+<h1>${status}</h1>
+
+<h2>
+
+Safe Sequence:
+${safe.join(" ➜ ")}
+
+</h2>
+
+${table}
+
+<button onclick="window.location.href='deadlock.html'">
+
+Back
+
+</button>
+`;
+
+</script>
+
+</body>
+
+</html>

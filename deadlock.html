@@ -17,38 +17,65 @@ body{
     padding:20px;
 }
 
-.card{
+h1{
+    font-size:55px;
+}
+
+.container{
     background:#1c1c1c;
-    width:95%;
-    max-width:1000px;
+    width:90%;
     margin:auto;
-    padding:30px;
+    padding:40px;
     border-radius:20px;
 }
 
 input{
-    width:90%;
     padding:15px;
-    margin-top:15px;
+    width:80%;
     border:none;
     border-radius:10px;
-}
-
-textarea{
-    width:90%;
-    height:60px;
-    padding:15px;
-    margin-top:15px;
-    border:none;
-    border-radius:10px;
+    margin-top:10px;
+    font-size:18px;
 }
 
 button{
-    padding:15px 30px;
     margin-top:20px;
+    padding:15px 30px;
     border:none;
     border-radius:10px;
+    font-size:18px;
     cursor:pointer;
+}
+
+table{
+    width:100%;
+    margin-top:30px;
+    border-collapse:collapse;
+}
+
+th,td{
+    border:1px solid #444;
+    padding:15px;
+}
+
+th{
+    background:#333;
+}
+
+@media(max-width:768px){
+
+    h1{
+        font-size:35px;
+    }
+
+    .container{
+        width:95%;
+        padding:20px;
+    }
+
+    input{
+        width:90%;
+    }
 }
 
 </style>
@@ -59,17 +86,17 @@ button{
 
 <h1>Deadlock Detection</h1>
 
-<div class="card">
+<div class="container">
 
-<input
-type="number"
-id="processes"
-placeholder="Number of Processes">
+<h2>Number of Processes</h2>
 
-<input
-type="number"
-id="resources"
-placeholder="Number of Resources">
+<input type="number" id="n" value="5">
+
+<h2>Number of Resources</h2>
+
+<input type="number" id="r" value="3">
+
+<br>
 
 <button onclick="generateInputs()">
 
@@ -77,15 +104,11 @@ Generate Inputs
 
 </button>
 
-<form
-action="/run_deadlock"
-method="POST">
-
 <div id="inputs"></div>
 
-</form>
+<br>
 
-<button onclick="history.back()">
+<button onclick="window.location.href='index.html'">
 
 Back
 
@@ -97,51 +120,89 @@ Back
 
 function generateInputs(){
 
-    let p = document.getElementById("processes").value;
-    let r = document.getElementById("resources").value;
+    let n = parseInt(document.getElementById("n").value);
 
-    let html = `
+    let r = parseInt(document.getElementById("r").value);
 
-    <input type="hidden" name="processes" value="${p}">
-    <input type="hidden" name="resources" value="${r}">
+    let html = "";
+
+    html += `
+
+    <h2>Allocation Matrix</h2>
+
+    <table>
+
+    <tr>
+
+    <th>Process</th>
+    <th>Allocation</th>
+
+    </tr>
     `;
 
-    html += `<h2>Allocation Matrix</h2>`;
-
-    for(let i=0;i<p;i++){
+    for(let i=0;i<n;i++){
 
         html += `
-        <textarea
-        name="allocation${i}"
-        placeholder="Example: 0 1 0"
-        required></textarea>
+
+        <tr>
+
+        <td>P${i}</td>
+
+        <td>
+
+        <input type="text" id="alloc${i}" placeholder="Example: 0 1 0">
+
+        </td>
+
+        </tr>
         `;
     }
 
-    html += `<h2>Maximum Matrix</h2>`;
+    html += `</table>`;
 
-    for(let i=0;i<p;i++){
+    html += `
+
+    <h2>Maximum Matrix</h2>
+
+    <table>
+
+    <tr>
+
+    <th>Process</th>
+    <th>Maximum</th>
+
+    </tr>
+    `;
+
+    for(let i=0;i<n;i++){
 
         html += `
-        <textarea
-        name="maximum${i}"
-        placeholder="Example: 7 5 3"
-        required></textarea>
+
+        <tr>
+
+        <td>P${i}</td>
+
+        <td>
+
+        <input type="text" id="max${i}" placeholder="Example: 7 5 3">
+
+        </td>
+
+        </tr>
         `;
     }
+
+    html += `</table>`;
 
     html += `
 
     <h2>Available Resources</h2>
 
-    <textarea
-    name="available"
-    placeholder="Example: 3 3 2"
-    required></textarea>
+    <input type="text" id="available" placeholder="Example: 3 3 2">
 
     <br>
 
-    <button type="submit">
+    <button onclick="runDeadlock()">
 
     Run Deadlock Detection
 
@@ -151,7 +212,139 @@ function generateInputs(){
     document.getElementById("inputs").innerHTML = html;
 }
 
+function runDeadlock(){
+
+    let n = parseInt(document.getElementById("n").value);
+
+    let r = parseInt(document.getElementById("r").value);
+
+    let allocation = [];
+    let maximum = [];
+
+    for(let i=0;i<n;i++){
+
+        allocation.push(
+            document.getElementById(`alloc${i}`)
+            .value
+            .split(" ")
+            .map(Number)
+        );
+
+        maximum.push(
+            document.getElementById(`max${i}`)
+            .value
+            .split(" ")
+            .map(Number)
+        );
+    }
+
+    let available = document
+    .getElementById("available")
+    .value
+    .split(" ")
+    .map(Number);
+
+    let need = [];
+
+    for(let i=0;i<n;i++){
+
+        let row = [];
+
+        for(let j=0;j<r;j++){
+
+            row.push(
+                maximum[i][j] - allocation[i][j]
+            );
+        }
+
+        need.push(row);
+    }
+
+    let finish = Array(n).fill(false);
+
+    let safe = [];
+
+    let work = [...available];
+
+    while(true){
+
+        let found = false;
+
+        for(let i=0;i<n;i++){
+
+            if(!finish[i]){
+
+                let possible = true;
+
+                for(let j=0;j<r;j++){
+
+                    if(need[i][j] > work[j]){
+
+                        possible = false;
+                        break;
+                    }
+                }
+
+                if(possible){
+
+                    for(let j=0;j<r;j++){
+
+                        work[j] += allocation[i][j];
+                    }
+
+                    safe.push(`P${i}`);
+
+                    finish[i] = true;
+
+                    found = true;
+                }
+            }
+        }
+
+        if(!found)
+            break;
+    }
+
+    let deadlock = false;
+
+    for(let i=0;i<n;i++){
+
+        if(!finish[i]){
+
+            deadlock = true;
+        }
+    }
+
+    localStorage.setItem(
+        "deadlock_allocation",
+        JSON.stringify(allocation)
+    );
+
+    localStorage.setItem(
+        "deadlock_maximum",
+        JSON.stringify(maximum)
+    );
+
+    localStorage.setItem(
+        "deadlock_need",
+        JSON.stringify(need)
+    );
+
+    localStorage.setItem(
+        "deadlock_safe",
+        JSON.stringify(safe)
+    );
+
+    localStorage.setItem(
+        "deadlock_status",
+        deadlock ? "Deadlock Detected ❌" : "Safe State ✅"
+    );
+
+    window.location.href = "deadlock_result.html";
+}
+
 </script>
 
 </body>
+
 </html>
